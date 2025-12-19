@@ -830,3 +830,135 @@ console.log('🏛️ Iriga City Tourism Office');
 console.log('');
 console.log('NOTE: For COMPLETE version with all features,');
 console.log('copy Section 11 from the document to this file.');
+
+// Multiple Nationalities Feature
+let nationalityCount = 0;
+const nationalityData = [];
+
+function addNationalityRow() {
+    nationalityCount++;
+    const nationalityList = document.getElementById('nationalityList');
+    
+    const row = document.createElement('div');
+    row.className = 'nationality-row';
+    row.id = `nationality-row-${nationalityCount}`;
+    
+    row.innerHTML = `
+        <div class="nationality-input-group">
+            <select class="nationality-select" id="nationality-${nationalityCount}" onchange="updateNationalitySummary()">
+                <option value="">Select Country</option>
+                <option value="Philippines">Philippines</option>
+                <option value="United States">United States</option>
+                <option value="China">China</option>
+                <option value="Japan">Japan</option>
+                <option value="South Korea">South Korea</option>
+                <option value="Australia">Australia</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Canada">Canada</option>
+                <option value="Germany">Germany</option>
+                <option value="France">France</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Malaysia">Malaysia</option>
+                <option value="Indonesia">Indonesia</option>
+                <option value="Thailand">Thailand</option>
+                <option value="Vietnam">Vietnam</option>
+                <option value="India">India</option>
+                <option value="Taiwan">Taiwan</option>
+                <option value="Hong Kong">Hong Kong</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <input type="number" 
+                   class="nationality-count" 
+                   id="count-${nationalityCount}" 
+                   placeholder="Number of people"
+                   min="1"
+                   onchange="updateNationalitySummary()">
+            
+            <button type="button" 
+                    class="btn-remove-nationality" 
+                    onclick="removeNationalityRow(${nationalityCount})"
+                    title="Remove">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    nationalityList.appendChild(row);
+    updateNationalitySummary();
+}
+
+function removeNationalityRow(id) {
+    const row = document.getElementById(`nationality-row-${id}`);
+    if (row) {
+        row.remove();
+        updateNationalitySummary();
+    }
+}
+
+function updateNationalitySummary() {
+    const rows = document.querySelectorAll('.nationality-row');
+    const summary = {};
+    let totalPeople = 0;
+    
+    rows.forEach(row => {
+        const select = row.querySelector('.nationality-select');
+        const countInput = row.querySelector('.nationality-count');
+        
+        const nationality = select.value;
+        const count = parseInt(countInput.value) || 0;
+        
+        if (nationality && count > 0) {
+            summary[nationality] = (summary[nationality] || 0) + count;
+            totalPeople += count;
+        }
+    });
+    
+    const summaryDiv = document.getElementById('nationalitySummary');
+    const summaryContent = document.getElementById('summaryContent');
+    
+    if (Object.keys(summary).length > 0) {
+        summaryDiv.style.display = 'block';
+        let html = `<p><strong>Total People: ${totalPeople}</strong></p><ul>`;
+        
+        for (const [nationality, count] of Object.entries(summary)) {
+            html += `<li>${nationality}: ${count} ${count === 1 ? 'person' : 'people'}</li>`;
+        }
+        
+        html += '</ul>';
+        summaryContent.innerHTML = html;
+    } else {
+        summaryDiv.style.display = 'none';
+    }
+}
+
+function showNationalitySection() {
+    const section = document.getElementById('nationalitySection');
+    section.style.display = 'block';
+    
+    // Add first row automatically
+    if (nationalityCount === 0) {
+        addNationalityRow();
+    }
+}
+
+function hideNationalitySection() {
+    const section = document.getElementById('nationalitySection');
+    section.style.display = 'none';
+    
+    // Clear all rows
+    const nationalityList = document.getElementById('nationalityList');
+    nationalityList.innerHTML = '';
+    nationalityCount = 0;
+    updateNationalitySummary();
+}
+
+// Call this when "Yes" is selected for multiple nationalities question
+function handleMultipleNationalitiesChange(value) {
+    if (value === 'yes') {
+        showNationalitySection();
+    } else {
+        hideNationalitySection();
+    }
+}
+
