@@ -873,3 +873,190 @@ input[readonly] {
     background-color: #e9ecef;
     cursor: not-allowed;
 }
+
+/* Regional Report Spreadsheet Styling */
+.regional-report-container {
+    padding: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.report-header {
+    margin-bottom: 24px;
+}
+
+.report-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a73e8;
+    text-align: center;
+    margin: 16px 0;
+}
+
+.report-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    margin: 16px 0;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.control-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+}
+
+.control-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.spreadsheet-container {
+    margin: 24px 0;
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+.regional-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: white;
+}
+
+.regional-table th {
+    background: #1a73e8;
+    color: white;
+    padding: 10px 8px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid #0d47a1;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.regional-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.country-col,
+.metric-col {
+    text-align: left !important;
+    font-weight: 600;
+    background: #f8f9fa;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    min-width: 200px;
+}
+
+.total-col {
+    background: #e3f2fd;
+    font-weight: 700;
+}
+
+.table-input {
+    width: 70px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.table-input:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+}
+
+.calculated-cell {
+    background: #e8f5e9;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+.calculated-row {
+    background: #f1f8f4;
+}
+
+.country-group-header {
+    background: #e3f2fd;
+    font-weight: 700;
+    color: #1565c0;
+}
+
+.country-row:hover {
+    background: #f5f5f5;
+}
+
+.subtotal-row {
+    background: #fff3e0;
+    font-weight: 700;
+}
+
+.total-row {
+    background: #e1f5fe;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.grand-total-row {
+    background: #1a73e8;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.metric-name {
+    text-align: left !important;
+    padding-left: 16px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .report-controls {
+        flex-direction: column;
+    }
+    
+    .control-group {
+        width: 100%;
+    }
+    
+    .regional-table {
+        font-size: 11px;
+    }
+    
+    .table-input {
+        width: 50px;
+        padding: 4px;
+        font-size: 11px;
+    }
+    
+    .country-col,
+    .metric-col {
+        min-width: 150px;
+    }
+}

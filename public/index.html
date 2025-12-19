@@ -199,21 +199,6 @@
                     <h3>Accommodation Survey</h3>
                     <p>Hotels, resorts & lodging</p>
                 </button>
-                <button class="survey-card admin-only" onclick="openSurveyForm('regional')">
-                    <div class="survey-icon">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <h3>Regional Entry</h3>
-                    <p>Manual distribution data</p>
-                </button>
-            </div>
-        </div>
-
-        <div class="page hidden" id="dashboardPage">
-    <h2 class="page-title">Analytics Dashboard</h2>
-    
-    <div class="card">
-        <div class="card-header">
             <h3 class="card-title">Visitor Origins</h3>
             <button class="btn btn-sm" onclick="renderDashboard()">
                 <i class="fas fa-sync-alt"></i> Refresh
@@ -237,240 +222,173 @@
     </div>
 </div>
         <div class="page hidden" id="regionalPage">
-            <div class="survey-form-container">
-                <div class="survey-header">
+            <div class="regional-report-container">
+                <div class="report-header">
                     <div class="survey-logos">
                         <div class="dot-logo">Department of Tourism</div>
                         <div class="phil-logo">It's More Fun in the Philippines</div>
                     </div>
-                    <h2 class="survey-title">REPORT ON THE REGIONAL DISTRIBUTION OF TRAVELERS</h2>
-                    <p class="survey-instruction">Monthly distribution data entry for accommodation establishments</p>
+                    <h2 class="report-title">REPORT ON THE REGIONAL DISTRIBUTION OF TRAVELERS</h2>
+                    
+                    <!-- Report Controls -->
+                    <div class="report-controls">
+                        <div class="control-group">
+                            <label>City/Municipality:</label>
+                            <input type="text" id="report_city" value="Iriga City" class="control-input">
+                        </div>
+                        <div class="control-group">
+                            <label>Province:</label>
+                            <input type="text" id="report_province" value="Camarines Sur" class="control-input">
+                        </div>
+                        <div class="control-group">
+                            <label>Year:</label>
+                            <select id="report_year" class="control-input">
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="loadRegionalData()">
+                            <i class="fas fa-sync-alt"></i> Load Data
+                        </button>
+                        <button class="btn btn-success" onclick="saveRegionalData()">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
                 </div>
-                
-                <form id="regionalDistributionForm" class="survey-form">
-                    <!-- Location Information -->
-                    <div class="form-section">
-                        <label class="form-label">City/Municipality</label>
-                        <input type="text" class="form-input" id="regional_city" value="Iriga City" required>
+
+                <!-- Part I: Distribution Table -->
+                <div class="spreadsheet-container">
+                    <h3 class="section-title">PART I: COUNTRY OF RESIDENCE</h3>
+                    <div class="table-responsive">
+                        <table class="regional-table" id="distributionTable">
+                            <thead>
+                                <tr>
+                                    <th class="country-col">Country of Residence</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>
+                                    <th>Apr</th>
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                    <th class="total-col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="distributionTableBody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
-                    
-                    <div class="form-section">
-                        <label class="form-label">Province</label>
-                        <input type="text" class="form-input" id="regional_province" value="Camarines Sur" required>
+                </div>
+
+                <!-- Part II: Occupancy Table -->
+                <div class="spreadsheet-container">
+                    <h3 class="section-title">PART II: OCCUPANCY RATE AND LENGTH OF STAY</h3>
+                    <div class="table-responsive">
+                        <table class="regional-table" id="occupancyTable">
+                            <thead>
+                                <tr>
+                                    <th class="metric-col">Metric</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>
+                                    <th>Apr</th>
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="metric-name">No. of Rooms Occupied</td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="01"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="02"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="03"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="04"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="05"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="06"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="07"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="08"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="09"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="10"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="11"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="12"></td>
+                                </tr>
+                                <tr>
+                                    <td class="metric-name">No. of Rooms Available</td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="01"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="02"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="03"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="04"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="05"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="06"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="07"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="08"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="09"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="10"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="11"></td>
+                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="12"></td>
+                                </tr>
+                                <tr>
+                                    <td class="metric-name">Total Room Nights</td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="01"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="02"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="03"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="04"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="05"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="06"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="07"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="08"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="09"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="10"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="11"></td>
+                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="12"></td>
+                                </tr>
+                                <tr class="calculated-row">
+                                    <td class="metric-name">Occupancy Rate (%)</td>
+                                    <td class="calculated-cell" id="occupancy_01">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_02">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_03">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_04">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_05">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_06">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_07">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_08">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_09">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_10">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_11">0.00</td>
+                                    <td class="calculated-cell" id="occupancy_12">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="metric-name">Length of Stay (avg nights)</td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="01"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="02"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="03"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="04"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="05"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="06"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="07"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="08"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="09"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="10"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="11"></td>
+                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="12"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    
-                    <div class="form-section">
-                        <label class="form-label">Year</label>
-                        <input type="number" class="form-input" id="regional_year" value="2025" min="2020" max="2030" required>
-                    </div>
-                    
-                    <div class="form-section">
-                        <label class="form-label">Month</label>
-                        <select class="form-input" id="regional_month" required>
-                            <option value="">Select Month</option>
-                            <option value="January">January</option>
-                            <option value="February">February</option>
-                            <option value="March">March</option>
-                            <option value="April">April</option>
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="August">August</option>
-                            <option value="September">September</option>
-                            <option value="October">October</option>
-                            <option value="November">November</option>
-                            <option value="December">December</option>
-                        </select>
-                    </div>
-
-                    <!-- PART I: COUNTRY OF RESIDENCE -->
-                    <div class="form-section">
-                        <h3 class="section-title">PART I: COUNTRY OF RESIDENCE</h3>
-                        
-                        <!-- Philippine Residents -->
-                        <div class="subsection">
-                            <h4 class="subsection-title">Philippine Residents</h4>
-                            
-                            <label class="form-label">Provincial Residents</label>
-                            <input type="number" class="form-input" id="provincial_residents" min="0" value="0">
-                            
-                            <label class="form-label">Regional Residents (Non-Provincial)</label>
-                            <input type="number" class="form-input" id="regional_nonprovincial" min="0" value="0">
-                            
-                            <label class="form-label">Regional Residents (Provincial)</label>
-                            <input type="number" class="form-input" id="regional_provincial" min="0" value="0">
-                            
-                            <label class="form-label">Total Philippine Residents</label>
-                            <input type="number" class="form-input" id="total_ph_residents" min="0" value="0" readonly>
-                        </div>
-
-                        <!-- NON-PHILIPPINE RESIDENTS -->
-                        <div class="subsection">
-                            <h4 class="subsection-title">Non-Philippine Residents</h4>
-                            
-                            <!-- EAST ASIA -->
-                            <h5 class="country-group-title">EAST ASIA</h5>
-                            <label class="form-label">China</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="china" min="0" value="0">
-                            
-                            <label class="form-label">Cambodia</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="cambodia" min="0" value="0">
-                            
-                            <label class="form-label">Indonesia</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="indonesia" min="0" value="0">
-                            
-                            <label class="form-label">Laos</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="laos" min="0" value="0">
-                            
-                            <label class="form-label">Malaysia</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="malaysia" min="0" value="0">
-                            
-                            <label class="form-label">Myanmar</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="myanmar" min="0" value="0">
-                            
-                            <label class="form-label">Singapore</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="singapore" min="0" value="0">
-                            
-                            <label class="form-label">Thailand</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="thailand" min="0" value="0">
-                            
-                            <label class="form-label">Vietnam</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="vietnam" min="0" value="0">
-                            
-                            <label class="form-label">Sub-Total (East Asia)</label>
-                            <input type="number" class="form-input" id="subtotal_east_asia" min="0" value="0" readonly>
-
-                            <!-- ASIA -->
-                            <h5 class="country-group-title">ASIA</h5>
-                            <label class="form-label">Japan</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="japan" min="0" value="0">
-                            
-                            <label class="form-label">Hongkong</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="hongkong" min="0" value="0">
-                            
-                            <label class="form-label">Taiwan</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="taiwan" min="0" value="0">
-                            
-                            <label class="form-label">Korea</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="korea" min="0" value="0">
-                            
-                            <label class="form-label">Sub-Total (Asia)</label>
-                            <input type="number" class="form-input" id="subtotal_asia" min="0" value="0" readonly>
-
-                            <!-- SOUTH ASIA -->
-                            <h5 class="country-group-title">SOUTH ASIA</h5>
-                            <label class="form-label">Bangladesh</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="bangladesh" min="0" value="0">
-                            
-                            <label class="form-label">India</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="india" min="0" value="0">
-                            
-                            <label class="form-label">Iran</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="iran" min="0" value="0">
-                            
-                            <label class="form-label">Nepal</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="nepal" min="0" value="0">
-                            
-                            <label class="form-label">Pakistan</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="pakistan" min="0" value="0">
-                            
-                            <label class="form-label">Sri Lanka</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="srilanka" min="0" value="0">
-                            
-                            <label class="form-label">Sub-Total (South Asia)</label>
-                            <input type="number" class="form-input" id="subtotal_south_asia" min="0" value="0" readonly>
-
-                            <!-- OCEANIA -->
-                            <h5 class="country-group-title">OCEANIA</h5>
-                            <label class="form-label">Australia</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="australia" min="0" value="0">
-                            
-                            <label class="form-label">New Zealand</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="newzealand" min="0" value="0">
-                            
-                            <label class="form-label">Papua New Guinea</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="png" min="0" value="0">
-                            
-                            <label class="form-label">Sub-Total (Oceania)</label>
-                            <input type="number" class="form-input" id="subtotal_oceania" min="0" value="0" readonly>
-
-                            <!-- AFRICA -->
-                            <h5 class="country-group-title">AFRICA</h5>
-                            <label class="form-label">Nigeria</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="nigeria" min="0" value="0">
-                            
-                            <label class="form-label">South Africa</label>
-                            <input type="number" class="form-input" name="country_visitor" data-country="southafrica" min="0" value="0">
-                            
-                            <label class="form-label">Sub-Total (Africa)</label>
-                            <input type="number" class="form-input" id="subtotal_africa" min="0" value="0" readonly>
-
-                            <!-- OTHER -->
-                            <label class="form-label">Other and Unspecified Residence</label>
-                            <input type="number" class="form-input" id="other_residence" min="0" value="0">
-                            
-                            <label class="form-label">Total Non-Philippine Residents</label>
-                            <input type="number" class="form-input" id="total_non_ph" min="0" value="0" readonly>
-                        </div>
-
-                        <!-- OVERSEAS FILIPINOS -->
-                        <div class="subsection">
-                            <label class="form-label">Overseas Filipinos*</label>
-                            <input type="number" class="form-input" id="overseas_filipinos" min="0" value="0">
-                            <p class="field-note">*Passport holders permanently residing abroad; excludes overseas Filipino workers</p>
-                        </div>
-
-                        <!-- GRAND TOTALS -->
-                        <div class="subsection">
-                            <h4 class="subsection-title">Summary Totals</h4>
-                            
-                            <label class="form-label">GRAND TOTAL GUEST ARRIVALS</label>
-                            <input type="number" class="form-input" id="grand_total_arrivals" min="0" value="0" readonly>
-                            
-                            <label class="form-label">Total Philippine Residents</label>
-                            <input type="number" class="form-input" id="summary_ph_residents" min="0" value="0" readonly>
-                            
-                            <label class="form-label">Total Non-Philippine Residents</label>
-                            <input type="number" class="form-input" id="summary_non_ph" min="0" value="0" readonly>
-                            
-                            <label class="form-label">Total Overseas Filipinos</label>
-                            <input type="number" class="form-input" id="summary_overseas" min="0" value="0" readonly>
-                            
-                            <label class="form-label">Total Guest with Unidentified Residence</label>
-                            <input type="number" class="form-input" id="unidentified_residence" min="0" value="0">
-                        </div>
-                    </div>
-
-                    <!-- PART II: OCCUPANCY RATE AND LENGTH OF STAY -->
-                    <div class="form-section">
-                        <h3 class="section-title">PART II: OCCUPANCY RATE AND LENGTH OF STAY</h3>
-                        
-                        <label class="form-label">No. of Rooms Occupied</label>
-                        <input type="number" class="form-input" id="rooms_occupied" min="0" value="0">
-                        
-                        <label class="form-label">No. of Rooms Available</label>
-                        <input type="number" class="form-input" id="rooms_available" min="0" value="0">
-                        
-                        <label class="form-label">Total Room Nights</label>
-                        <input type="number" class="form-input" id="total_room_nights" min="0" value="0">
-                        
-                        <label class="form-label">Occupancy Rate (%)</label>
-                        <input type="number" class="form-input" id="occupancy_rate" min="0" max="100" step="0.01" value="0" readonly>
-                        
-                        <label class="form-label">Length of Stay (Average nights)</label>
-                        <input type="number" class="form-input" id="length_of_stay" min="0" step="0.1" value="0">
-                    </div>
-
-                    <!-- Enumerator -->
-                    <div class="form-section">
-                        <label class="form-label">Enumerator</label>
-                        <input type="text" class="form-input" id="regional_enumerator" placeholder="Your name" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-block">
-                        <i class="fas fa-paper-plane"></i> Submit Regional Report
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
         <div class="page hidden" id="historyPage"></div>

@@ -981,231 +981,358 @@ function getNationalityDataForSubmission() {
 // ==================== REGIONAL DISTRIBUTION FORM ====================
 // Auto-calculate subtotals and totals for regional distribution form
 function setupRegionalFormCalculations() {
-    const form = document.getElementById('regionalDistributionForm');
-    if (!form) return;
 
-    // Get all country visitor inputs
-    const countryInputs = form.querySelectorAll('input[name="country_visitor"]');
+// ==================== REGIONAL SPREADSHEET ====================
+const COUNTRY_GROUPS = {
+    'Philippine Residents': [
+        'Provincial Residents',
+        'Regional Residents (Non-Provincial)',
+        'Regional Residents (Provincial)'
+    ],
+    'EAST ASIA': [
+        'China', 'Cambodia', 'Indonesia', 'Laos', 'Malaysia', 
+        'Myanmar', 'Singapore', 'Thailand', 'Vietnam'
+    ],
+    'ASIA': [
+        'Japan', 'Hong Kong', 'Taiwan', 'Korea'
+    ],
+    'SOUTH ASIA': [
+        'Bangladesh', 'India', 'Iran', 'Nepal', 'Pakistan', 'Sri Lanka'
+    ],
+    'OCEANIA': [
+        'Australia', 'New Zealand', 'Papua New Guinea'
+    ],
+    'AFRICA': [
+        'Nigeria', 'South Africa'
+    ],
+    'MIDDLE EAST': [
+        'Saudi Arabia', 'United Arab Emirates', 'Israel'
+    ],
+    'EUROPE': [
+        'United Kingdom', 'Germany', 'France', 'Spain', 'Italy', 'Netherlands'
+    ],
+    'AMERICAS': [
+        'United States', 'Canada', 'Brazil', 'Mexico'
+    ]
+};
+
+function buildDistributionTable() {
+    const tbody = document.getElementById('distributionTableBody');
+    let html = '';
     
-    // Calculate Philippine residents total
-    const calculatePhTotal = () => {
-        const provincial = parseInt(document.getElementById('provincial_residents').value) || 0;
-        const regionalNonProv = parseInt(document.getElementById('regional_nonprovincial').value) || 0;
-        const regionalProv = parseInt(document.getElementById('regional_provincial').value) || 0;
-        const total = provincial + regionalNonProv + regionalProv;
-        document.getElementById('total_ph_residents').value = total;
-        document.getElementById('summary_ph_residents').value = total;
-        calculateGrandTotal();
-    };
-
-    // Calculate East Asia subtotal
-    const calculateEastAsiaTotal = () => {
-        const countries = ['china', 'cambodia', 'indonesia', 'laos', 'malaysia', 'myanmar', 'singapore', 'thailand', 'vietnam'];
-        const total = countries.reduce((sum, country) => {
-            const input = form.querySelector(`input[data-country="${country}"]`);
-            return sum + (parseInt(input?.value) || 0);
-        }, 0);
-        document.getElementById('subtotal_east_asia').value = total;
-        calculateNonPhTotal();
-    };
-
-    // Calculate Asia subtotal
-    const calculateAsiaTotal = () => {
-        const countries = ['japan', 'hongkong', 'taiwan', 'korea'];
-        const total = countries.reduce((sum, country) => {
-            const input = form.querySelector(`input[data-country="${country}"]`);
-            return sum + (parseInt(input?.value) || 0);
-        }, 0);
-        document.getElementById('subtotal_asia').value = total;
-        calculateNonPhTotal();
-    };
-
-    // Calculate South Asia subtotal
-    const calculateSouthAsiaTotal = () => {
-        const countries = ['bangladesh', 'india', 'iran', 'nepal', 'pakistan', 'srilanka'];
-        const total = countries.reduce((sum, country) => {
-            const input = form.querySelector(`input[data-country="${country}"]`);
-            return sum + (parseInt(input?.value) || 0);
-        }, 0);
-        document.getElementById('subtotal_south_asia').value = total;
-        calculateNonPhTotal();
-    };
-
-    // Calculate Oceania subtotal
-    const calculateOceaniaTotal = () => {
-        const countries = ['australia', 'newzealand', 'png'];
-        const total = countries.reduce((sum, country) => {
-            const input = form.querySelector(`input[data-country="${country}"]`);
-            return sum + (parseInt(input?.value) || 0);
-        }, 0);
-        document.getElementById('subtotal_oceania').value = total;
-        calculateNonPhTotal();
-    };
-
-    // Calculate Africa subtotal
-    const calculateAfricaTotal = () => {
-        const countries = ['nigeria', 'southafrica'];
-        const total = countries.reduce((sum, country) => {
-            const input = form.querySelector(`input[data-country="${country}"]`);
-            return sum + (parseInt(input?.value) || 0);
-        }, 0);
-        document.getElementById('subtotal_africa').value = total;
-        calculateNonPhTotal();
-    };
-
-    // Calculate total non-Philippine residents
-    const calculateNonPhTotal = () => {
-        const eastAsia = parseInt(document.getElementById('subtotal_east_asia').value) || 0;
-        const asia = parseInt(document.getElementById('subtotal_asia').value) || 0;
-        const southAsia = parseInt(document.getElementById('subtotal_south_asia').value) || 0;
-        const oceania = parseInt(document.getElementById('subtotal_oceania').value) || 0;
-        const africa = parseInt(document.getElementById('subtotal_africa').value) || 0;
-        const other = parseInt(document.getElementById('other_residence').value) || 0;
+    Object.entries(COUNTRY_GROUPS).forEach(([groupName, countries]) => {
+        // Group header
+        html += `<tr class="country-group-header">
+            <td colspan="14">${groupName}</td>
+        </tr>`;
         
-        const total = eastAsia + asia + southAsia + oceania + africa + other;
-        document.getElementById('total_non_ph').value = total;
-        document.getElementById('summary_non_ph').value = total;
-        calculateGrandTotal();
-    };
-
-    // Calculate grand total
-    const calculateGrandTotal = () => {
-        const phResidents = parseInt(document.getElementById('total_ph_residents').value) || 0;
-        const nonPhResidents = parseInt(document.getElementById('total_non_ph').value) || 0;
-        const overseasFilipinos = parseInt(document.getElementById('overseas_filipinos').value) || 0;
+        // Country rows
+        countries.forEach(country => {
+            const countryId = country.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            html += `<tr class="country-row">
+                <td class="country-col">${country}</td>`;
+            
+            // Month columns (Jan-Dec)
+            for (let month = 1; month <= 12; month++) {
+                const monthStr = month.toString().padStart(2, '0');
+                html += `<td><input type="number" min="0" value="0" 
+                    class="table-input country-input" 
+                    data-country="${countryId}" 
+                    data-month="${monthStr}"></td>`;
+            }
+            
+            // Total column
+            html += `<td class="total-col" id="total_${countryId}">0</td>
+            </tr>`;
+        });
         
-        const grandTotal = phResidents + nonPhResidents + overseasFilipinos;
-        document.getElementById('grand_total_arrivals').value = grandTotal;
-        document.getElementById('summary_overseas').value = overseasFilipinos;
-    };
+        // Subtotal row
+        const groupId = groupName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        html += `<tr class="subtotal-row">
+            <td class="country-col">Sub-Total (${groupName})</td>`;
+        
+        for (let month = 1; month <= 12; month++) {
+            const monthStr = month.toString().padStart(2, '0');
+            html += `<td id="subtotal_${groupId}_${monthStr}">0</td>`;
+        }
+        
+        html += `<td class="total-col" id="subtotal_${groupId}_total">0</td>
+        </tr>`;
+    });
+    
+    // Other and unspecified
+    html += `<tr class="country-row">
+        <td class="country-col">Other and Unspecified Residence</td>`;
+    for (let month = 1; month <= 12; month++) {
+        const monthStr = month.toString().padStart(2, '0');
+        html += `<td><input type="number" min="0" value="0" 
+            class="table-input country-input" 
+            data-country="other" 
+            data-month="${monthStr}"></td>`;
+    }
+    html += `<td class="total-col" id="total_other">0</td></tr>`;
+    
+    // Overseas Filipinos
+    html += `<tr class="country-row">
+        <td class="country-col">Overseas Filipinos*</td>`;
+    for (let month = 1; month <= 12; month++) {
+        const monthStr = month.toString().padStart(2, '0');
+        html += `<td><input type="number" min="0" value="0" 
+            class="table-input country-input" 
+            data-country="overseas_filipinos" 
+            data-month="${monthStr}"></td>`;
+    }
+    html += `<td class="total-col" id="total_overseas_filipinos">0</td></tr>`;
+    
+    // Grand totals
+    html += `<tr class="grand-total-row">
+        <td class="country-col">GRAND TOTAL GUEST ARRIVALS</td>`;
+    for (let month = 1; month <= 12; month++) {
+        const monthStr = month.toString().padStart(2, '0');
+        html += `<td id="grand_total_${monthStr}">0</td>`;
+    }
+    html += `<td class="total-col" id="grand_total_year">0</td></tr>`;
+    
+    tbody.innerHTML = html;
+    
+    // Add event listeners for auto-calculation
+    document.querySelectorAll('.country-input').forEach(input => {
+        input.addEventListener('input', calculateRegionalTotals);
+    });
+    
+    // Add event listeners for occupancy calculations
+    document.querySelectorAll('.table-input[data-metric]').forEach(input => {
+        input.addEventListener('input', calculateOccupancy);
+    });
+}
 
-    // Calculate occupancy rate
-    const calculateOccupancyRate = () => {
-        const occupied = parseInt(document.getElementById('rooms_occupied').value) || 0;
-        const available = parseInt(document.getElementById('rooms_available').value) || 0;
+function calculateRegionalTotals() {
+    // Calculate row totals
+    document.querySelectorAll('.country-row').forEach(row => {
+        const inputs = row.querySelectorAll('.country-input');
+        if (inputs.length > 0) {
+            const country = inputs[0].dataset.country;
+            let rowTotal = 0;
+            
+            inputs.forEach(input => {
+                rowTotal += parseInt(input.value) || 0;
+            });
+            
+            const totalCell = document.getElementById(`total_${country}`);
+            if (totalCell) totalCell.textContent = rowTotal;
+        }
+    });
+    
+    // Calculate group subtotals
+    Object.entries(COUNTRY_GROUPS).forEach(([groupName, countries]) => {
+        const groupId = groupName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        
+        for (let month = 1; month <= 12; month++) {
+            const monthStr = month.toString().padStart(2, '0');
+            let monthTotal = 0;
+            
+            countries.forEach(country => {
+                const countryId = country.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                const input = document.querySelector(
+                    `.country-input[data-country="${countryId}"][data-month="${monthStr}"]`
+                );
+                monthTotal += parseInt(input?.value) || 0;
+            });
+            
+            const subtotalCell = document.getElementById(`subtotal_${groupId}_${monthStr}`);
+            if (subtotalCell) subtotalCell.textContent = monthTotal;
+        }
+        
+        // Calculate group total
+        let groupTotal = 0;
+        for (let month = 1; month <= 12; month++) {
+            const monthStr = month.toString().padStart(2, '0');
+            const subtotalCell = document.getElementById(`subtotal_${groupId}_${monthStr}`);
+            groupTotal += parseInt(subtotalCell?.textContent) || 0;
+        }
+        
+        const groupTotalCell = document.getElementById(`subtotal_${groupId}_total`);
+        if (groupTotalCell) groupTotalCell.textContent = groupTotal;
+    });
+    
+    // Calculate grand totals
+    for (let month = 1; month <= 12; month++) {
+        const monthStr = month.toString().padStart(2, '0');
+        const allInputs = document.querySelectorAll(`.country-input[data-month="${monthStr}"]`);
+        let monthTotal = 0;
+        
+        allInputs.forEach(input => {
+            monthTotal += parseInt(input.value) || 0;
+        });
+        
+        const grandTotalCell = document.getElementById(`grand_total_${monthStr}`);
+        if (grandTotalCell) grandTotalCell.textContent = monthTotal;
+    }
+    
+    // Calculate year total
+    let yearTotal = 0;
+    for (let month = 1; month <= 12; month++) {
+        const monthStr = month.toString().padStart(2, '0');
+        const grandTotalCell = document.getElementById(`grand_total_${monthStr}`);
+        yearTotal += parseInt(grandTotalCell?.textContent) || 0;
+    }
+    
+    const yearTotalCell = document.getElementById('grand_total_year');
+    if (yearTotalCell) yearTotalCell.textContent = yearTotal;
+}
+
+function calculateOccupancy() {
+    for (let month = 1; month <= 12; month++) {
+        const monthStr = month.toString().padStart(2, '0');
+        
+        const occupiedInput = document.querySelector(
+            `.table-input[data-metric="rooms_occupied"][data-month="${monthStr}"]`
+        );
+        const availableInput = document.querySelector(
+            `.table-input[data-metric="rooms_available"][data-month="${monthStr}"]`
+        );
+        
+        const occupied = parseInt(occupiedInput?.value) || 0;
+        const available = parseInt(availableInput?.value) || 0;
+        
+        const occupancyCell = document.getElementById(`occupancy_${monthStr}`);
         
         if (available > 0) {
             const rate = (occupied / available) * 100;
-            document.getElementById('occupancy_rate').value = rate.toFixed(2);
+            if (occupancyCell) occupancyCell.textContent = rate.toFixed(2);
         } else {
-            document.getElementById('occupancy_rate').value = '0.00';
+            if (occupancyCell) occupancyCell.textContent = '0.00';
         }
-    };
-
-    // Add event listeners for Philippine residents
-    ['provincial_residents', 'regional_nonprovincial', 'regional_provincial'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', calculatePhTotal);
-    });
-
-    // Add event listeners for all country inputs
-    countryInputs.forEach(input => {
-        input.addEventListener('input', () => {
-            const country = input.dataset.country;
-            if (['china', 'cambodia', 'indonesia', 'laos', 'malaysia', 'myanmar', 'singapore', 'thailand', 'vietnam'].includes(country)) {
-                calculateEastAsiaTotal();
-            } else if (['japan', 'hongkong', 'taiwan', 'korea'].includes(country)) {
-                calculateAsiaTotal();
-            } else if (['bangladesh', 'india', 'iran', 'nepal', 'pakistan', 'srilanka'].includes(country)) {
-                calculateSouthAsiaTotal();
-            } else if (['australia', 'newzealand', 'png'].includes(country)) {
-                calculateOceaniaTotal();
-            } else if (['nigeria', 'southafrica'].includes(country)) {
-                calculateAfricaTotal();
-            }
-        });
-    });
-
-    // Add event listeners for other fields
-    document.getElementById('other_residence')?.addEventListener('input', calculateNonPhTotal);
-    document.getElementById('overseas_filipinos')?.addEventListener('input', calculateGrandTotal);
-    document.getElementById('rooms_occupied')?.addEventListener('input', calculateOccupancyRate);
-    document.getElementById('rooms_available')?.addEventListener('input', calculateOccupancyRate);
-
-    // Initialize calculations
-    calculatePhTotal();
-    calculateEastAsiaTotal();
-    calculateAsiaTotal();
-    calculateSouthAsiaTotal();
-    calculateOceaniaTotal();
-    calculateAfricaTotal();
-    calculateNonPhTotal();
-    calculateGrandTotal();
-    calculateOccupancyRate();
+    }
 }
 
-// Handle regional form submission
-document.addEventListener('DOMContentLoaded', function() {
-    const regionalForm = document.getElementById('regionalDistributionForm');
-    if (regionalForm) {
-        setupRegionalFormCalculations();
+async function loadRegionalData() {
+    const city = document.getElementById('report_city').value;
+    const province = document.getElementById('report_province').value;
+    const year = document.getElementById('report_year').value;
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/regional/data?city=${city}&province=${province}&year=${year}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
         
-        regionalForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Collect all form data
-            const formData = {
-                city: document.getElementById('regional_city').value,
-                province: document.getElementById('regional_province').value,
-                year: document.getElementById('regional_year').value,
-                month: document.getElementById('regional_month').value,
-                
-                // Philippine Residents
-                provincial_residents: parseInt(document.getElementById('provincial_residents').value) || 0,
-                regional_nonprovincial: parseInt(document.getElementById('regional_nonprovincial').value) || 0,
-                regional_provincial: parseInt(document.getElementById('regional_provincial').value) || 0,
-                total_ph_residents: parseInt(document.getElementById('total_ph_residents').value) || 0,
-                
-                // Country data (collect all country inputs)
-                countries: {},
-                
-                // Totals
-                total_non_ph: parseInt(document.getElementById('total_non_ph').value) || 0,
-                overseas_filipinos: parseInt(document.getElementById('overseas_filipinos').value) || 0,
-                grand_total_arrivals: parseInt(document.getElementById('grand_total_arrivals').value) || 0,
-                unidentified_residence: parseInt(document.getElementById('unidentified_residence').value) || 0,
-                
-                // Part II
-                rooms_occupied: parseInt(document.getElementById('rooms_occupied').value) || 0,
-                rooms_available: parseInt(document.getElementById('rooms_available').value) || 0,
-                total_room_nights: parseInt(document.getElementById('total_room_nights').value) || 0,
-                occupancy_rate: parseFloat(document.getElementById('occupancy_rate').value) || 0,
-                length_of_stay: parseFloat(document.getElementById('length_of_stay').value) || 0,
-                
-                enumerator: document.getElementById('regional_enumerator').value,
-                submitted_at: new Date().toISOString()
-            };
-            
-            // Collect all country visitor counts
-            const countryInputs = regionalForm.querySelectorAll('input[name="country_visitor"]');
-            countryInputs.forEach(input => {
-                const country = input.dataset.country;
-                formData.countries[country] = parseInt(input.value) || 0;
+        if (response.ok) {
+            const data = await response.json();
+            populateRegionalData(data);
+            showToast('Data loaded successfully', 'success');
+        } else {
+            showToast('No data found for this period', 'info');
+        }
+    } catch (error) {
+        console.error('Load error:', error);
+        showToast('Failed to load data', 'error');
+    }
+}
+}
+
+function populateRegionalData(data) {
+    // Populate distribution data
+    if (data.distribution) {
+        Object.entries(data.distribution).forEach(([country, months]) => {
+            Object.entries(months).forEach(([month, value]) => {
+                const input = document.querySelector(
+                    `.country-input[data-country="${country}"][data-month="${month}"]`
+                );
+                if (input) input.value = value;
             });
-            
-            try {
-                const response = await fetch(`${API_BASE}/api/regional/submit`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify(formData)
+        });
+    }
+    
+    // Populate occupancy data
+    if (data.occupancy) {
+        ['rooms_occupied', 'rooms_available', 'room_nights', 'length_of_stay'].forEach(metric => {
+            if (data.occupancy[metric]) {
+                Object.entries(data.occupancy[metric]).forEach(([month, value]) => {
+                    const input = document.querySelector(
+                        `.table-input[data-metric="${metric}"][data-month="${month}"]`
+                    );
+                    if (input) input.value = value;
                 });
-                
-                if (response.ok) {
-                    showAlert('Regional distribution report submitted successfully!', 'success');
-                    regionalForm.reset();
-                    setupRegionalFormCalculations(); // Reset calculations
-                    navigate('homePage');
-                } else {
-                    const error = await response.json();
-                    showAlert(error.message || 'Failed to submit report', 'error');
-                }
-            } catch (error) {
-                console.error('Regional form submission error:', error);
-                showAlert('Network error. Please try again.', 'error');
             }
         });
     }
-});
+    
+    calculateRegionalTotals();
+    calculateOccupancy();
+}
 
+async function saveRegionalData() {
+    const city = document.getElementById('report_city').value;
+    const province = document.getElementById('report_province').value;
+    const year = document.getElementById('report_year').value;
+    
+    // Collect all distribution data
+    const distribution = {};
+    document.querySelectorAll('.country-input').forEach(input => {
+        const country = input.dataset.country;
+        const month = input.dataset.month;
+        const value = parseInt(input.value) || 0;
+        
+        if (!distribution[country]) distribution[country] = {};
+        distribution[country][month] = value;
+    });
+    
+    // Collect occupancy data
+    const occupancy = {
+        rooms_occupied: {},
+        rooms_available: {},
+        room_nights: {},
+        length_of_stay: {}
+    };
+    
+    document.querySelectorAll('.table-input[data-metric]').forEach(input => {
+        const metric = input.dataset.metric;
+        const month = input.dataset.month;
+        const value = parseFloat(input.value) || 0;
+        
+        if (occupancy[metric]) {
+            occupancy[metric][month] = value;
+        }
+    });
+    
+    const dataToSave = {
+        city,
+        province,
+        year,
+        distribution,
+        occupancy,
+        updated_at: new Date().toISOString()
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/regional/save`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(dataToSave)
+        });
+        
+        if (response.ok) {
+            showToast('Data saved successfully!', 'success');
+        } else {
+            const error = await response.json();
+            showToast(error.message || 'Failed to save data', 'error');
+        }
+    } catch (error) {
+        console.error('Save error:', error);
+        showToast('Network error. Please try again.', 'error');
+    }
+}
+
+// Initialize regional page
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('regionalPage')) {
+        buildDistributionTable();
+        calculateRegionalTotals();
+        calculateOccupancy();
+    }
+});
