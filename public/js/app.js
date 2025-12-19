@@ -211,6 +211,7 @@ function navigate(pageId) {
 function updateHeaderTitle(pageId) {
     const titles = {
         'authPage': { title: 'Touris-Ta', subtitle: 'Tourism Office' },
+        'attractionSurveyPage': { title: 'Attraction Survey', subtitle: 'DOT Form' },
         'homePage': { title: 'Home', subtitle: 'Dashboard' },
         'submitPage': { title: 'Submit Survey', subtitle: 'Choose survey type' },
         'dashboardPage': { title: 'Analytics', subtitle: 'Data visualization' },
@@ -302,7 +303,7 @@ async function loadStats() {
 // ==================== SURVEY FORMS ====================
 function openSurveyForm(type) {
     if (type === 'attraction') {
-        showAttractionForm();
+        navigate("attractionSurveyPage");
     } else if (type === 'accommodation') {
         showAccommodationForm();
     } else if (type === 'regional') {
@@ -314,7 +315,7 @@ function openSurveyForm(type) {
     }
 }
 
-function showAttractionForm() {
+function navigate("attractionSurveyPage") {
     const today = new Date().toISOString().split('T')[0];
     
     showModal({

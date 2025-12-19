@@ -241,6 +241,255 @@
         <div class="page hidden" id="feedbackPage"></div>
         <div class="page hidden" id="reportsPage"></div>
         <div class="page hidden" id="dataPage"></div>
+        <div class="page hidden" id="attractionSurveyPage">
+<div class="survey-form-container">
+        </div>
+    <div class="survey-header">
+        <div class="survey-logos">
+            <div class="dot-logo">Department of Tourism</div>
+            <div class="phil-logo">It's More Fun in the Philippines</div>
+        </div>
+        <h2 class="survey-title">TOURISM ATTRACTION VISITOR SURVEY</h2>
+        <p class="survey-instruction">Please answer by encircling the number of your choice and filling in the blanks.</p>
+    </div>
+
+    <form id="attractionSurveyForm" class="survey-form">
+        <!-- Q1: Residence -->
+        <div class="form-section">
+            <label class="question-label">Q1 Where is your residence?</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="residence" value="in_city" required>
+                    <span>1. In this City / Municipality</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="residence" value="outside">
+                    <span>2. Outside the Municipality</span>
+                </label>
+                <div class="indent-group" id="outsideGroup" style="display:none;">
+                    <input type="text" class="form-input" placeholder="City / Municipality" id="residenceCity">
+                    <input type="text" class="form-input" placeholder="Province" id="residenceProvince">
+                </div>
+                <label class="radio-option">
+                    <input type="radio" name="residence" value="foreign">
+                    <span>3. Foreign Country</span>
+                </label>
+                <input type="text" class="form-input" id="foreignCountry" placeholder="Country" style="display:none;">
+            </div>
+        </div>
+
+        <!-- Q2: Overnight Stay -->
+        <div class="form-section">
+            <label class="question-label">Q2 Are you going to stay overnight in this city / municipality?</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="overnight" value="yes" required>
+                    <span>1. Yes - How many night(s) did you spend in this city/municipality?</span>
+                </label>
+                <input type="number" class="form-input-small" id="nightsCount" placeholder="Nights" style="display:none;">
+                
+                <div class="sub-question" id="accommodationQuestion" style="display:none;">
+                    <p>Q2.1.b Are you going to stay in a commercial accommodation establishment?</p>
+                    <label class="radio-option-inline">
+                        <input type="radio" name="accommodation" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-option-inline">
+                        <input type="radio" name="accommodation" value="no">
+                        <span>No</span>
+                    </label>
+                </div>
+
+                <label class="radio-option">
+                    <input type="radio" name="overnight" value="no">
+                    <span>2. No</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q3: Purpose of Visit -->
+        <div class="form-section">
+            <label class="question-label">Q3 What is your main purpose for visiting this attraction?</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="pleasure" required>
+                    <span>1. Pleasure / Recreation</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="business">
+                    <span>2. Business</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="education">
+                    <span>3. Educational / Fieldtrip</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="health">
+                    <span>4. Health and wellness</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="other">
+                    <span>5. Others. Pls. specify:</span>
+                </label>
+                <input type="text" class="form-input" id="purposeOther" placeholder="Please specify" style="display:none;">
+            </div>
+        </div>
+
+        <!-- Q4: Rating -->
+        <div class="form-section">
+            <label class="question-label">Q4 Please rate this attraction according to the following in a scale of 1 - 4, with 4 being the highest.</label>
+            <table class="rating-table">
+                <thead>
+                    <tr>
+                        <th>Attributes</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. Security</td>
+                        <td><input type="radio" name="rating_security" value="1" required></td>
+                        <td><input type="radio" name="rating_security" value="2"></td>
+                        <td><input type="radio" name="rating_security" value="3"></td>
+                        <td><input type="radio" name="rating_security" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td>2. Cleanliness</td>
+                        <td><input type="radio" name="rating_cleanliness" value="1" required></td>
+                        <td><input type="radio" name="rating_cleanliness" value="2"></td>
+                        <td><input type="radio" name="rating_cleanliness" value="3"></td>
+                        <td><input type="radio" name="rating_cleanliness" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td>3. Presence of activities</td>
+                        <td><input type="radio" name="rating_activities" value="1" required></td>
+                        <td><input type="radio" name="rating_activities" value="2"></td>
+                        <td><input type="radio" name="rating_activities" value="3"></td>
+                        <td><input type="radio" name="rating_activities" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td>4. Staff friendliness and overall work attitude</td>
+                        <td><input type="radio" name="rating_staff" value="1" required></td>
+                        <td><input type="radio" name="rating_staff" value="2"></td>
+                        <td><input type="radio" name="rating_staff" value="3"></td>
+                        <td><input type="radio" name="rating_staff" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td>5. Value for money</td>
+                        <td><input type="radio" name="rating_value" value="1" required></td>
+                        <td><input type="radio" name="rating_value" value="2"></td>
+                        <td><input type="radio" name="rating_value" value="3"></td>
+                        <td><input type="radio" name="rating_value" value="4"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Q5: Visit Frequency -->
+        <div class="form-section">
+            <label class="question-label">Q5 How many times have you visited this attraction?</label>
+            <div class="radio-group-inline">
+                <label class="radio-option-inline">
+                    <input type="radio" name="visits" value="1" required>
+                    <span>1x</span>
+                </label>
+                <label class="radio-option-inline">
+                    <input type="radio" name="visits" value="2">
+                    <span>2x</span>
+                </label>
+                <label class="radio-option-inline">
+                    <input type="radio" name="visits" value="3+">
+                    <span>3x+</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q6: Expenses -->
+        <div class="form-section">
+            <label class="question-label">Q6.a How much have you spent here in this attraction?</label>
+            <div class="expense-group">
+                <select class="form-select" id="currency" required>
+                    <option value="">Currency</option>
+                    <option value="PHP">PHP (₱)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="other">Other</option>
+                </select>
+                <input type="text" class="form-input" id="currencyOther" placeholder="Specify currency" style="display:none;">
+                <input type="number" class="form-input" id="amount" placeholder="Amount" required>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label class="question-label">Q6.b Including yourself, how many person(s) are included in the expense you stated?</label>
+            <input type="number" class="form-input-small" id="persons" placeholder="Number of persons" required>
+        </div>
+
+        <!-- Q7: Personal Profile -->
+        <div class="form-section">
+            <label class="question-label">Q7 Personal Profile</label>
+            <div class="profile-group">
+                <div class="profile-item">
+                    <label>Age</label>
+                    <input type="number" class="form-input-small" id="age" placeholder="Age" required>
+                </div>
+                <div class="profile-item">
+                    <label>Sex</label>
+                    <div class="radio-group-inline">
+                        <label class="radio-option-inline">
+                            <input type="radio" name="sex" value="M" required>
+                            <span>M</span>
+                        </label>
+                        <label class="radio-option-inline">
+                            <input type="radio" name="sex" value="F">
+                            <span>F</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="thank-you-text">Thank you very much for the time and information you gave for the survey!<br>Enjoy the rest of your stay!</p>
+
+        <!-- Survey Details -->
+        <div class="form-section">
+            <label class="form-label">Date of Survey (Month/Day/Year)</label>
+            <input type="date" class="form-input" id="surveyDate" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">Tourist Attraction</label>
+            <input type="text" class="form-input" id="attraction" placeholder="Attraction name" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">City / Municipality</label>
+            <input type="text" class="form-input" id="city" value="Iriga City" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">Province</label>
+            <input type="text" class="form-input" id="province" value="Camarines Sur" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">Enumerator</label>
+            <input type="text" class="form-input" id="enumerator" placeholder="Your name" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">Code</label>
+            <input type="text" class="form-input" id="code" placeholder="Optional code">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-paper-plane"></i> Submit Survey
+        </button>
+    </form>
+</div>
     </main>
 
     <nav class="bottom-nav" id="bottomNav">
