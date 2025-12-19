@@ -435,7 +435,7 @@ async function submitAttractionSurvey() {
     }
 }
 
-function showAccommodationForm {
+function showAccommodationForm() {
     const today = new Date().toISOString().split('T')[0];
     
     showModal({
