@@ -1,0 +1,223 @@
+═══════════════════════════════════════════════════════════════════════════
+  TURIS-TA MOBILE - COMPLETE SETUP GUIDE FOR VISUAL STUDIO CODE
+═══════════════════════════════════════════════════════════════════════════
+
+📦 WHAT'S INCLUDED:
+✅ Complete Node.js + Express backend
+✅ PostgreSQL database with 3 admin accounts
+✅ Modern mobile-first frontend UI
+✅ All routes and APIs ready to use
+✅ Configuration files pre-configured with YOUR password (081008)
+
+═══════════════════════════════════════════════════════════════════════════
+🚀 STEP-BY-STEP SETUP (Follow in order)
+═══════════════════════════════════════════════════════════════════════════
+
+STEP 1: OPEN IN VISUAL STUDIO CODE
+───────────────────────────────────
+1. Extract the turista-mobile.zip file
+2. Open Visual Studio Code
+3. Click: File → Open Folder
+4. Select the "turista-mobile" folder
+5. Click "Select Folder"
+
+STEP 2: INSTALL DEPENDENCIES
+───────────────────────────────────
+1. In VS Code, press: Ctrl + ` (backtick) to open terminal
+2. Type: npm install
+3. Press Enter
+4. Wait 2-3 minutes for installation to complete
+
+STEP 3: SETUP POSTGRESQL DATABASE
+───────────────────────────────────
+Option A - Using pgAdmin (EASIEST):
+  1. Open pgAdmin 4 from Start Menu
+  2. Connect to PostgreSQL server (password: 081008)
+  3. Right-click "Databases" → Create → Database
+  4. Name it: turista_db
+  5. Click Save
+  6. Right-click the new "turista_db" database
+  7. Select "Query Tool"
+  8. Click "Open File" icon
+  9. Navigate to turista-mobile folder
+  10. Open "database.sql"
+  11. Click Execute (F5 or ▶ play button)
+  12. You should see "INSERT 0 3" for the admin accounts
+
+Option B - Using Command Line:
+  1. Open Command Prompt or PowerShell
+  2. Navigate to project folder:
+     cd C:\path\to\turista-mobile
+  3. Run: psql -U postgres -d postgres -f database.sql
+  4. Enter password when prompted: 081008
+
+STEP 4: START THE SERVER
+───────────────────────────────────
+1. Back in VS Code terminal, type: npm start
+2. Press Enter
+3. You should see:
+   🚀 TURIS-TA Mobile Server running on http://localhost:3000
+   ✅ Connected to PostgreSQL database
+
+STEP 5: OPEN IN BROWSER
+───────────────────────────────────
+1. Open your web browser (Chrome, Edge, Firefox, etc.)
+2. Go to: http://localhost:3000
+3. You'll see a beautiful splash screen, then the login page
+
+STEP 6: LOGIN
+───────────────────────────────────
+Use ANY of these THREE admin accounts:
+
+Account 1:
+  Username: admin01
+  Password: AdminPass01
+
+Account 2:
+  Username: admin02
+  Password: AdminPass02
+
+Account 3:
+  Username: admin03
+  Password: AdminPass03
+
+═══════════════════════════════════════════════════════════════════════════
+✅ YOU'RE DONE! The app should now be running.
+═══════════════════════════════════════════════════════════════════════════
+
+🎯 WHAT YOU CAN DO NOW:
+• View dashboard with statistics
+• Submit attraction surveys
+• Submit accommodation surveys
+• View submission history
+• Generate reports and export to Excel
+• Manage users (admin only)
+• View regional distribution data
+• Send and view feedback
+
+═══════════════════════════════════════════════════════════════════════════
+❌ TROUBLESHOOTING COMMON ISSUES
+═══════════════════════════════════════════════════════════════════════════
+
+PROBLEM: "npm: command not found" or "npm is not recognized"
+SOLUTION: Node.js is not installed or not in PATH
+  → Download Node.js from: https://nodejs.org
+  → Install the LTS version
+  → Restart VS Code after installation
+  → Try again
+
+PROBLEM: "Database connection failed"
+SOLUTION: PostgreSQL issue
+  → Check PostgreSQL is running:
+    - Open Services (services.msc)
+    - Look for "postgresql-x64-16" or similar
+    - Make sure it's "Running"
+  → Verify password is correct in .env file (should be 081008)
+  → Confirm database turista_db exists in pgAdmin
+
+PROBLEM: "Port 3000 already in use"
+SOLUTION: Another app is using port 3000
+  → Open .env file
+  → Change PORT=3000 to PORT=3001
+  → Save file
+  → Restart server with: npm start
+  → Access at: http://localhost:3001
+
+PROBLEM: "Invalid credentials" when logging in
+SOLUTION: Database not initialized properly
+  → Make sure you ran the database.sql script
+  → Check in pgAdmin that turista_db database has:
+    - users table with 3 admin entries
+    - All other tables created
+  → If missing, re-run the database.sql script
+
+PROBLEM: "bcrypt" or module errors during npm install
+SOLUTION: Build tools missing (Windows)
+  → Run as Administrator:
+    npm install --global windows-build-tools
+  → Then run: npm install --force
+
+PROBLEM: White screen or "Cannot GET /"
+SOLUTION: Frontend files missing
+  → Make sure these files exist:
+    - public/index.html
+    - public/css/mobile.css
+    - public/js/app.js
+  → If missing, re-extract the ZIP file
+
+═══════════════════════════════════════════════════════════════════════════
+📱 TESTING THE APP
+═══════════════════════════════════════════════════════════════════════════
+
+After logging in, try these:
+
+1. VIEW DASHBOARD
+   - Click "Dashboard" in side menu or bottom nav
+   - See statistics and charts
+   - View recent activity
+
+2. SUBMIT A SURVEY
+   - Click "Submit Survey" 
+   - Choose "Attraction Survey" or "Accommodation Survey"
+   - Fill out the form
+   - Click Submit
+   - Check History to see your submission
+
+3. VIEW REGIONAL DATA (Admin only)
+   - Click "Regional Data" in menu
+   - See visitor distribution by country
+   - Export to Excel
+
+4. MANAGE USERS (Admin only)
+   - Click "Data Manager"
+   - See pending user approvals
+   - Approve or reject new accounts
+
+5. GENERATE REPORTS (Admin only)
+   - Click "Reports"
+   - Generate master report
+   - Export data to Excel
+
+═══════════════════════════════════════════════════════════════════════════
+🎨 FEATURES TO TRY
+═══════════════════════════════════════════════════════════════════════════
+
+• Dark Mode: Click theme toggle in side menu
+• Mobile View: Press F12 → Click mobile icon → Choose device
+• Bottom Navigation: Easy thumb-friendly navigation on mobile
+• Pull to Refresh: Drag down on pages (mobile)
+• Toast Notifications: See success/error messages
+• Charts: Interactive data visualizations
+• Excel Export: Download data as spreadsheets
+
+═══════════════════════════════════════════════════════════════════════════
+🔧 DEVELOPMENT MODE
+═══════════════════════════════════════════════════════════════════════════
+
+For development with auto-restart on file changes:
+
+1. npm run dev
+
+This uses nodemon to automatically restart the server when you edit files.
+
+═══════════════════════════════════════════════════════════════════════════
+🛑 STOPPING THE SERVER
+═══════════════════════════════════════════════════════════════════════════
+
+To stop the server:
+1. Go to VS Code terminal
+2. Press: Ctrl + C
+3. Confirm with: Y (if asked)
+
+═══════════════════════════════════════════════════════════════════════════
+📞 NEED HELP?
+═══════════════════════════════════════════════════════════════════════════
+
+If you're still having issues:
+1. Check all steps were followed in order
+2. Make sure PostgreSQL is running
+3. Verify Node.js is installed (check with: node --version)
+4. Confirm database was created successfully
+5. Check VS Code terminal for error messages
+
+═══════════════════════════════════════════════════════════════════════════

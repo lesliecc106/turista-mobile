@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Touris-Ta</string>
+    <string name="title_activity_main">Touris-Ta</string>
+    <string name="package_name">com.irigacity.tourista</string>
+    <string name="custom_url_scheme">com.irigacity.tourista</string>
+</resources>
