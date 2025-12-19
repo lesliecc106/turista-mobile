@@ -553,7 +553,6 @@ async function submitAccommodationSurvey() {
     }
 }
 
-}
 
 // ==================== HISTORY PAGE ====================
 function renderHistoryPage() {
