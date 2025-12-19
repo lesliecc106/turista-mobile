@@ -962,3 +962,56 @@ function handleMultipleNationalitiesChange(value) {
     }
 }
 
+
+// Add validation before form submission
+function validateSurveyForm() {
+    // Validate nationality section if visible
+    const nationalitySection = document.getElementById('nationalitySection');
+    if (nationalitySection && nationalitySection.style.display !== 'none') {
+        const rows = document.querySelectorAll('.nationality-row');
+        let hasValidRow = false;
+        
+        rows.forEach(row => {
+            const select = row.querySelector('.nationality-select');
+            const countInput = row.querySelector('.nationality-count');
+            
+            if (select.value && countInput.value && countInput.value > 0) {
+                hasValidRow = true;
+            }
+        });
+        
+        if (!hasValidRow) {
+            alert('Please add at least one nationality with a valid count, or select "No" for multiple nationalities.');
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Export nationality data for API submission
+function getNationalityDataForSubmission() {
+    const multipleNationalities = document.querySelector('input[name="multipleNationalities"]:checked');
+    
+    if (!multipleNationalities || multipleNationalities.value !== 'yes') {
+        return null;
+    }
+    
+    const rows = document.querySelectorAll('.nationality-row');
+    const nationalityData = [];
+    
+    rows.forEach(row => {
+        const select = row.querySelector('.nationality-select');
+        const countInput = row.querySelector('.nationality-count');
+        
+        if (select.value && countInput.value && countInput.value > 0) {
+            nationalityData.push({
+                nationality: select.value,
+                count: parseInt(countInput.value)
+            });
+        }
+    });
+    
+    return nationalityData;
+}
+

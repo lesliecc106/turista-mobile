@@ -90,3 +90,149 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Function to collect nationality data from the dynamic form
+function collectNationalityData() {
+    const nationalityData = [];
+    const rows = document.querySelectorAll('.nationality-row');
+    
+    rows.forEach(row => {
+        const select = row.querySelector('.nationality-select');
+        const countInput = row.querySelector('.nationality-count');
+        
+        const nationality = select.value;
+        const count = parseInt(countInput.value) || 0;
+        
+        if (nationality && count > 0) {
+            nationalityData.push({
+                nationality: nationality,
+                count: count
+            });
+        }
+    });
+    
+    return nationalityData;
+}
+
+// Enhanced form submission handler
+document.addEventListener('DOMContentLoaded', function() {
+    const surveyForm = document.getElementById('attractionSurveyForm');
+    
+    if (surveyForm) {
+        surveyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect basic form data
+            const formData = new FormData(surveyForm);
+            const surveyData = {};
+            
+            // Convert FormData to object
+            formData.forEach((value, key) => {
+                surveyData[key] = value;
+            });
+            
+            // Add nationality data if multiple nationalities was selected
+            const multipleNationalities = document.querySelector('input[name="multipleNationalities"]:checked');
+            if (multipleNationalities && multipleNationalities.value === 'yes') {
+                surveyData.nationalities = collectNationalityData();
+                surveyData.hasMultipleNationalities = true;
+            } else {
+                surveyData.hasMultipleNationalities = false;
+            }
+            
+            // Add timestamp
+            surveyData.submittedAt = new Date().toISOString();
+            
+            // Log the data (replace with actual API call)
+            console.log('Survey Data:', surveyData);
+            
+            // Validate nationality data if applicable
+            if (surveyData.hasMultipleNationalities && surveyData.nationalities.length === 0) {
+                alert('Please add at least one nationality or select "No" for multiple nationalities.');
+                return;
+            }
+            
+            // Submit to backend (implement your API endpoint)
+            submitSurveyData(surveyData);
+        });
+    }
+});
+
+// Function to submit survey data to backend
+async function submitSurveyData(surveyData) {
+    try {
+        // Show loading indicator
+        const submitButton = document.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        submitButton.disabled = true;
+        
+        // TODO: Replace with your actual API endpoint
+        const response = await fetch('/api/surveys/attraction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(surveyData)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            
+            // Show success message
+            alert('Survey submitted successfully! Thank you for your feedback.');
+            
+            // Reset form
+            document.getElementById('attractionSurveyForm').reset();
+            hideNationalitySection();
+            
+            // Navigate back or show confirmation
+            if (typeof navigate === 'function') {
+                navigate('homePage');
+            }
+        } else {
+            throw new Error('Submission failed');
+        }
+        
+        // Restore button
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+        
+    } catch (error) {
+        console.error('Error submitting survey:', error);
+        alert('Failed to submit survey. Please try again.');
+        
+        // Restore button
+        const submitButton = document.querySelector('button[type="submit"]');
+        submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Survey';
+        submitButton.disabled = false;
+    }
+}
+
+// Add validation helper
+function validateNationalityData() {
+    const nationalityData = collectNationalityData();
+    const multipleNationalitiesYes = document.querySelector('input[name="multipleNationalities"][value="yes"]');
+    
+    if (multipleNationalitiesYes && multipleNationalitiesYes.checked) {
+        if (nationalityData.length === 0) {
+            return {
+                valid: false,
+                message: 'Please add at least one nationality or select "No".'
+            };
+        }
+        
+        // Check for duplicate nationalities
+        const nationalities = nationalityData.map(item => item.nationality);
+        const uniqueNationalities = new Set(nationalities);
+        if (nationalities.length !== uniqueNationalities.size) {
+            return {
+                valid: false,
+                message: 'Duplicate nationalities detected. Please combine them.'
+            };
+        }
+    }
+    
+    return { valid: true };
+}
+
