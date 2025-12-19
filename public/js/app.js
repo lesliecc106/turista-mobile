@@ -1,4 +1,4 @@
-// TURIS-TA Mobile App - Main Application Logic
+// Touris-Ta Mobile App - Main Application Logic
 // For COMPLETE version with all features, copy Section 11 from document
 
 // ==================== GLOBAL STATE ====================
@@ -210,7 +210,7 @@ function navigate(pageId) {
 
 function updateHeaderTitle(pageId) {
     const titles = {
-        'authPage': { title: 'TURIS-TA', subtitle: 'Tourism Office' },
+        'authPage': { title: 'Touris-Ta', subtitle: 'Tourism Office' },
         'homePage': { title: 'Home', subtitle: 'Dashboard' },
         'submitPage': { title: 'Submit Survey', subtitle: 'Choose survey type' },
         'dashboardPage': { title: 'Analytics', subtitle: 'Data visualization' },
@@ -823,7 +823,7 @@ function formatDate(dateStr) {
 }
 
 // ==================== CONSOLE LOG ====================
-console.log('🚀 TURIS-TA Mobile App Initialized');
+console.log('🚀 Touris-Ta Mobile App Initialized');
 console.log('📱 Version: 2.0 (Mobile Edition)');
 console.log('🏛️ Iriga City Tourism Office');
 console.log('');
