@@ -25,6 +25,9 @@ function initializeApp() {
         document.getElementById('splash').classList.add('hidden');
     }, 3000);
     
+
+    // Hide navigation on initial load (auth page)
+    document.body.classList.add('auth-active');
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
 }
@@ -195,6 +198,13 @@ function navigate(pageId) {
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
         targetPage.classList.remove('hidden');
+
+        // Toggle auth-active class for hiding nav elements
+        if (pageId === 'authPage') {
+            document.body.classList.add('auth-active');
+        } else {
+            document.body.classList.remove('auth-active');
+        }
         currentPage = pageId;
         updateHeaderTitle(pageId);
         

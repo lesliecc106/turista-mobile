@@ -823,3 +823,9 @@ body.admin-mode .admin-only { display: flex; }
     }
 }
 
+
+/* Hide navigation elements during authentication */
+body.auth-active .bottom-nav,
+body.auth-active .fab {
+    display: none !important;
+}
