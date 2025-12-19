@@ -829,3 +829,47 @@ body.auth-active .bottom-nav,
 body.auth-active .fab {
     display: none !important;
 }
+
+/* Regional Distribution Form Styling */
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a73e8;
+    margin: 24px 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #1a73e8;
+}
+
+.subsection {
+    margin: 20px 0;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.subsection-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.country-group-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    margin: 16px 0 8px 0;
+    text-transform: uppercase;
+}
+
+.field-note {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+    margin-top: 4px;
+}
+
+input[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}

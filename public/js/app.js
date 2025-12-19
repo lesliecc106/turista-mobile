@@ -319,7 +319,7 @@ function openSurveyForm(type) {
         navigate("accommodationSurveyPage");
     } else if (type === 'regional') {
         if (currentUser && currentUser.role === 'admin') {
-            showRegionalForm();
+            navigate("regionalPage");
         } else {
             showToast('Admin access required', 'error');
         }
@@ -553,54 +553,6 @@ async function submitAccommodationSurvey() {
     }
 }
 
-function showRegionalForm() {
-    showModal({
-        title: 'Regional Distribution Entry',
-        body: `
-            <form id="regionalForm">
-                <div class="form-group">
-                    <label><i class="fas fa-globe"></i> Country/Region</label>
-                    <select id="reg_origin" required>
-                        ${COUNTRIES.map(c => `<option value="${c}">${c}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-hashtag"></i> Visitor Count</label>
-                    <input type="number" id="reg_count" min="1" value="1" required>
-                </div>
-            </form>
-        `,
-        confirmText: 'Add Entry',
-        onConfirm: submitRegionalEntry
-    });
-}
-
-async function submitRegionalEntry() {
-    const formData = {
-        origin: document.getElementById('reg_origin').value,
-        count: parseInt(document.getElementById('reg_count').value)
-    };
-    
-    try {
-        const response = await fetch(`${API_BASE}/api/regional/manual`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(formData)
-        });
-        
-        if (response.ok) {
-            showToast('Entry added successfully!', 'success');
-            hideModal();
-            loadStats();
-        } else {
-            const data = await response.json();
-            showToast(data.error || 'Submission failed', 'error');
-        }
-    } catch (error) {
-        console.error('Submit error:', error);
-        showToast('Connection error', 'error');
-    }
 }
 
 // ==================== HISTORY PAGE ====================
@@ -1025,4 +977,236 @@ function getNationalityDataForSubmission() {
     
     return nationalityData;
 }
+
+
+// ==================== REGIONAL DISTRIBUTION FORM ====================
+// Auto-calculate subtotals and totals for regional distribution form
+function setupRegionalFormCalculations() {
+    const form = document.getElementById('regionalDistributionForm');
+    if (!form) return;
+
+    // Get all country visitor inputs
+    const countryInputs = form.querySelectorAll('input[name="country_visitor"]');
+    
+    // Calculate Philippine residents total
+    const calculatePhTotal = () => {
+        const provincial = parseInt(document.getElementById('provincial_residents').value) || 0;
+        const regionalNonProv = parseInt(document.getElementById('regional_nonprovincial').value) || 0;
+        const regionalProv = parseInt(document.getElementById('regional_provincial').value) || 0;
+        const total = provincial + regionalNonProv + regionalProv;
+        document.getElementById('total_ph_residents').value = total;
+        document.getElementById('summary_ph_residents').value = total;
+        calculateGrandTotal();
+    };
+
+    // Calculate East Asia subtotal
+    const calculateEastAsiaTotal = () => {
+        const countries = ['china', 'cambodia', 'indonesia', 'laos', 'malaysia', 'myanmar', 'singapore', 'thailand', 'vietnam'];
+        const total = countries.reduce((sum, country) => {
+            const input = form.querySelector(`input[data-country="${country}"]`);
+            return sum + (parseInt(input?.value) || 0);
+        }, 0);
+        document.getElementById('subtotal_east_asia').value = total;
+        calculateNonPhTotal();
+    };
+
+    // Calculate Asia subtotal
+    const calculateAsiaTotal = () => {
+        const countries = ['japan', 'hongkong', 'taiwan', 'korea'];
+        const total = countries.reduce((sum, country) => {
+            const input = form.querySelector(`input[data-country="${country}"]`);
+            return sum + (parseInt(input?.value) || 0);
+        }, 0);
+        document.getElementById('subtotal_asia').value = total;
+        calculateNonPhTotal();
+    };
+
+    // Calculate South Asia subtotal
+    const calculateSouthAsiaTotal = () => {
+        const countries = ['bangladesh', 'india', 'iran', 'nepal', 'pakistan', 'srilanka'];
+        const total = countries.reduce((sum, country) => {
+            const input = form.querySelector(`input[data-country="${country}"]`);
+            return sum + (parseInt(input?.value) || 0);
+        }, 0);
+        document.getElementById('subtotal_south_asia').value = total;
+        calculateNonPhTotal();
+    };
+
+    // Calculate Oceania subtotal
+    const calculateOceaniaTotal = () => {
+        const countries = ['australia', 'newzealand', 'png'];
+        const total = countries.reduce((sum, country) => {
+            const input = form.querySelector(`input[data-country="${country}"]`);
+            return sum + (parseInt(input?.value) || 0);
+        }, 0);
+        document.getElementById('subtotal_oceania').value = total;
+        calculateNonPhTotal();
+    };
+
+    // Calculate Africa subtotal
+    const calculateAfricaTotal = () => {
+        const countries = ['nigeria', 'southafrica'];
+        const total = countries.reduce((sum, country) => {
+            const input = form.querySelector(`input[data-country="${country}"]`);
+            return sum + (parseInt(input?.value) || 0);
+        }, 0);
+        document.getElementById('subtotal_africa').value = total;
+        calculateNonPhTotal();
+    };
+
+    // Calculate total non-Philippine residents
+    const calculateNonPhTotal = () => {
+        const eastAsia = parseInt(document.getElementById('subtotal_east_asia').value) || 0;
+        const asia = parseInt(document.getElementById('subtotal_asia').value) || 0;
+        const southAsia = parseInt(document.getElementById('subtotal_south_asia').value) || 0;
+        const oceania = parseInt(document.getElementById('subtotal_oceania').value) || 0;
+        const africa = parseInt(document.getElementById('subtotal_africa').value) || 0;
+        const other = parseInt(document.getElementById('other_residence').value) || 0;
+        
+        const total = eastAsia + asia + southAsia + oceania + africa + other;
+        document.getElementById('total_non_ph').value = total;
+        document.getElementById('summary_non_ph').value = total;
+        calculateGrandTotal();
+    };
+
+    // Calculate grand total
+    const calculateGrandTotal = () => {
+        const phResidents = parseInt(document.getElementById('total_ph_residents').value) || 0;
+        const nonPhResidents = parseInt(document.getElementById('total_non_ph').value) || 0;
+        const overseasFilipinos = parseInt(document.getElementById('overseas_filipinos').value) || 0;
+        
+        const grandTotal = phResidents + nonPhResidents + overseasFilipinos;
+        document.getElementById('grand_total_arrivals').value = grandTotal;
+        document.getElementById('summary_overseas').value = overseasFilipinos;
+    };
+
+    // Calculate occupancy rate
+    const calculateOccupancyRate = () => {
+        const occupied = parseInt(document.getElementById('rooms_occupied').value) || 0;
+        const available = parseInt(document.getElementById('rooms_available').value) || 0;
+        
+        if (available > 0) {
+            const rate = (occupied / available) * 100;
+            document.getElementById('occupancy_rate').value = rate.toFixed(2);
+        } else {
+            document.getElementById('occupancy_rate').value = '0.00';
+        }
+    };
+
+    // Add event listeners for Philippine residents
+    ['provincial_residents', 'regional_nonprovincial', 'regional_provincial'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', calculatePhTotal);
+    });
+
+    // Add event listeners for all country inputs
+    countryInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            const country = input.dataset.country;
+            if (['china', 'cambodia', 'indonesia', 'laos', 'malaysia', 'myanmar', 'singapore', 'thailand', 'vietnam'].includes(country)) {
+                calculateEastAsiaTotal();
+            } else if (['japan', 'hongkong', 'taiwan', 'korea'].includes(country)) {
+                calculateAsiaTotal();
+            } else if (['bangladesh', 'india', 'iran', 'nepal', 'pakistan', 'srilanka'].includes(country)) {
+                calculateSouthAsiaTotal();
+            } else if (['australia', 'newzealand', 'png'].includes(country)) {
+                calculateOceaniaTotal();
+            } else if (['nigeria', 'southafrica'].includes(country)) {
+                calculateAfricaTotal();
+            }
+        });
+    });
+
+    // Add event listeners for other fields
+    document.getElementById('other_residence')?.addEventListener('input', calculateNonPhTotal);
+    document.getElementById('overseas_filipinos')?.addEventListener('input', calculateGrandTotal);
+    document.getElementById('rooms_occupied')?.addEventListener('input', calculateOccupancyRate);
+    document.getElementById('rooms_available')?.addEventListener('input', calculateOccupancyRate);
+
+    // Initialize calculations
+    calculatePhTotal();
+    calculateEastAsiaTotal();
+    calculateAsiaTotal();
+    calculateSouthAsiaTotal();
+    calculateOceaniaTotal();
+    calculateAfricaTotal();
+    calculateNonPhTotal();
+    calculateGrandTotal();
+    calculateOccupancyRate();
+}
+
+// Handle regional form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const regionalForm = document.getElementById('regionalDistributionForm');
+    if (regionalForm) {
+        setupRegionalFormCalculations();
+        
+        regionalForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Collect all form data
+            const formData = {
+                city: document.getElementById('regional_city').value,
+                province: document.getElementById('regional_province').value,
+                year: document.getElementById('regional_year').value,
+                month: document.getElementById('regional_month').value,
+                
+                // Philippine Residents
+                provincial_residents: parseInt(document.getElementById('provincial_residents').value) || 0,
+                regional_nonprovincial: parseInt(document.getElementById('regional_nonprovincial').value) || 0,
+                regional_provincial: parseInt(document.getElementById('regional_provincial').value) || 0,
+                total_ph_residents: parseInt(document.getElementById('total_ph_residents').value) || 0,
+                
+                // Country data (collect all country inputs)
+                countries: {},
+                
+                // Totals
+                total_non_ph: parseInt(document.getElementById('total_non_ph').value) || 0,
+                overseas_filipinos: parseInt(document.getElementById('overseas_filipinos').value) || 0,
+                grand_total_arrivals: parseInt(document.getElementById('grand_total_arrivals').value) || 0,
+                unidentified_residence: parseInt(document.getElementById('unidentified_residence').value) || 0,
+                
+                // Part II
+                rooms_occupied: parseInt(document.getElementById('rooms_occupied').value) || 0,
+                rooms_available: parseInt(document.getElementById('rooms_available').value) || 0,
+                total_room_nights: parseInt(document.getElementById('total_room_nights').value) || 0,
+                occupancy_rate: parseFloat(document.getElementById('occupancy_rate').value) || 0,
+                length_of_stay: parseFloat(document.getElementById('length_of_stay').value) || 0,
+                
+                enumerator: document.getElementById('regional_enumerator').value,
+                submitted_at: new Date().toISOString()
+            };
+            
+            // Collect all country visitor counts
+            const countryInputs = regionalForm.querySelectorAll('input[name="country_visitor"]');
+            countryInputs.forEach(input => {
+                const country = input.dataset.country;
+                formData.countries[country] = parseInt(input.value) || 0;
+            });
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/regional/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    showAlert('Regional distribution report submitted successfully!', 'success');
+                    regionalForm.reset();
+                    setupRegionalFormCalculations(); // Reset calculations
+                    navigate('homePage');
+                } else {
+                    const error = await response.json();
+                    showAlert(error.message || 'Failed to submit report', 'error');
+                }
+            } catch (error) {
+                console.error('Regional form submission error:', error);
+                showAlert('Network error. Please try again.', 'error');
+            }
+        });
+    }
+});
 
