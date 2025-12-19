@@ -68,7 +68,7 @@ body {
 .splash-logo {
     width: 100px;
     height: 100px;
-    background: url('assets/tourista-logo.png') center/contain no-repeat;
+    background: url('assets/splash.png') center/contain no-repeat;
     border-radius: 30px;
     display: flex;
     align-items: center;

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeApp() {
     setTimeout(() => {
         document.getElementById('splash').classList.add('hidden');
-    }, 1500);
+    }, 3000);
     
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
