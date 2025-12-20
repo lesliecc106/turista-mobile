@@ -1,6 +1,5 @@
 -- Turista Mobile Database Schema
 
--- Users table
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
@@ -9,7 +8,6 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Surveys table
 CREATE TABLE IF NOT EXISTS surveys (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -20,7 +18,6 @@ CREATE TABLE IF NOT EXISTS surveys (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Survey questions table
 CREATE TABLE IF NOT EXISTS survey_questions (
     id SERIAL PRIMARY KEY,
     survey_id INTEGER REFERENCES surveys(id) ON DELETE CASCADE,
@@ -32,7 +29,6 @@ CREATE TABLE IF NOT EXISTS survey_questions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Survey responses table
 CREATE TABLE IF NOT EXISTS survey_responses (
     id SERIAL PRIMARY KEY,
     survey_id INTEGER REFERENCES surveys(id) ON DELETE CASCADE,
@@ -43,7 +39,6 @@ CREATE TABLE IF NOT EXISTS survey_responses (
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Survey sessions table (for tracking visitors)
 CREATE TABLE IF NOT EXISTS survey_sessions (
     id SERIAL PRIMARY KEY,
     survey_id INTEGER REFERENCES surveys(id) ON DELETE CASCADE,
@@ -53,7 +48,6 @@ CREATE TABLE IF NOT EXISTS survey_sessions (
     completed_at TIMESTAMP
 );
 
--- Analytics events table (optional - for detailed tracking)
 CREATE TABLE IF NOT EXISTS analytics_events (
     id SERIAL PRIMARY KEY,
     event_type VARCHAR(50) NOT NULL,
@@ -63,7 +57,6 @@ CREATE TABLE IF NOT EXISTS analytics_events (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_surveys_created_by ON surveys(created_by);
 CREATE INDEX IF NOT EXISTS idx_surveys_status ON surveys(status);
 CREATE INDEX IF NOT EXISTS idx_survey_questions_survey_id ON survey_questions(survey_id);
@@ -71,4 +64,3 @@ CREATE INDEX IF NOT EXISTS idx_survey_responses_survey_id ON survey_responses(su
 CREATE INDEX IF NOT EXISTS idx_survey_responses_submitted_at ON survey_responses(submitted_at);
 CREATE INDEX IF NOT EXISTS idx_survey_sessions_survey_id ON survey_sessions(survey_id);
 CREATE INDEX IF NOT EXISTS idx_survey_sessions_session_id ON survey_sessions(session_id);
-
