@@ -70,7 +70,7 @@ router.post('/signup', async (req, res) => {
         await pool.query(
             `INSERT INTO notifications (username, subject, body)
              VALUES ('admin01', 'New signup pending', $1)`,
-            ['`New account ${username} created and awaiting approval.`]
+            [`New account ${username} created and awaiting approval.`]
         );
         
         res.json({ success: true, message: 'Account created successfully' });
