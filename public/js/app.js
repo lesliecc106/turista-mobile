@@ -390,10 +390,12 @@ function updateHeaderTitle(pageId) {
 function loadPageData(pageId) {
     switch(pageId) {
         case 'homePage':
+            break;
         case 'dashboardPage':
             loadStats();
             break;
-            loadStats();
+        case 'dataPage':
+            loadDataManagerPage();
             break;
         case 'historyPage':
             loadHistoryData();
@@ -1489,3 +1491,284 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateOccupancy();
     }
 });
+
+// ==================== DATA MANAGER FUNCTIONS ====================
+
+// Load Data Manager page
+async function loadDataManagerPage() {
+    if (!currentUser || currentUser.role !== 'admin') {
+        showNotification('Access denied. Admin only.', 'error');
+        navigate('homePage');
+        return;
+    }
+    
+    await loadPendingApprovals();
+    await loadAllUsers();
+    await loadFeedback();
+}
+
+// Load pending approvals
+async function loadPendingApprovals() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/users/pending`, {
+            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        
+        if (!response.ok) throw new Error('Failed to load pending approvals');
+        
+        const pending = await response.json();
+        const container = document.getElementById('pendingApprovals');
+        const countBadge = document.getElementById('pendingCount');
+        
+        countBadge.textContent = pending.length;
+        
+        if (pending.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;">No pending approvals</p>';
+            return;
+        }
+        
+        container.innerHTML = pending.map(user => `
+            <div class="approval-card">
+                <h4><i class="fas fa-user"></i> ${user.name || user.username}</h4>
+                <div class="approval-info">
+                    <p><strong>Username:</strong> ${user.username}</p>
+                    <p><strong>Role:</strong> ${user.role}</p>
+                    <p><strong>Registered:</strong> ${new Date(user.createdAt).toLocaleDateString()}</p>
+                </div>
+                <div class="approval-actions">
+                    <button class="btn-success" onclick="approveUser('${user._id}')">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    <button class="btn-danger" onclick="rejectUser('${user._id}')">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading pending approvals:', error);
+        showNotification('Failed to load pending approvals', 'error');
+    }
+}
+
+// Approve user
+async function approveUser(userId) {
+    if (!confirm('Approve this user account?')) return;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/users/${userId}/approve`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        
+        if (!response.ok) throw new Error('Failed to approve user');
+        
+        showNotification('User approved successfully', 'success');
+        await loadPendingApprovals();
+        await loadAllUsers();
+    } catch (error) {
+        console.error('Error approving user:', error);
+        showNotification('Failed to approve user', 'error');
+    }
+}
+
+// Reject user
+async function rejectUser(userId) {
+    if (!confirm('Reject this user account? This will delete their account.')) return;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/users/${userId}/reject`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        
+        if (!response.ok) throw new Error('Failed to reject user');
+        
+        showNotification('User rejected successfully', 'success');
+        await loadPendingApprovals();
+    } catch (error) {
+        console.error('Error rejecting user:', error);
+        showNotification('Failed to reject user', 'error');
+    }
+}
+
+// Load all users
+async function loadAllUsers() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/users`, {
+            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        
+        if (!response.ok) throw new Error('Failed to load users');
+        
+        const users = await response.json();
+        const tbody = document.getElementById('usersTableBody');
+        
+        if (users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">No users found</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = users.map(user => `
+            <tr>
+                <td>${user.username}</td>
+                <td>${user.name || 'N/A'}</td>
+                <td><i class="fas fa-user-tag"></i> ${user.role}</td>
+                <td>
+                    <span class="status-badge status-${user.status}">
+                        ${user.status}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn-danger" onclick="deleteUser('${user._id}', '${user.username}')" 
+                            ${user.role === 'admin' ? 'disabled' : ''}>
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading users:', error);
+        showNotification('Failed to load users', 'error');
+    }
+}
+
+// Delete user
+async function deleteUser(userId, username) {
+    if (!confirm(`Delete user "${username}"? This action cannot be undone.`)) return;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        
+        if (!response.ok) throw new Error('Failed to delete user');
+        
+        showNotification('User deleted successfully', 'success');
+        await loadAllUsers();
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        showNotification('Failed to delete user', 'error');
+    }
+}
+
+// Refresh users
+async function refreshUsers() {
+    await loadAllUsers();
+    showNotification('Users refreshed', 'success');
+}
+
+// Create account form submission
+document.addEventListener('DOMContentLoaded', () => {
+    const createForm = document.getElementById('createAccountForm');
+    if (createForm) {
+        createForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const accountData = {
+                name: formData.get('fullName'),
+                username: formData.get('username'),
+                password: formData.get('password'),
+                role: formData.get('role'),
+                status: 'approved' // Admin-created accounts are pre-approved
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(accountData)
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to create account');
+                }
+                
+                showNotification('Account created successfully', 'success');
+                e.target.reset();
+                await loadAllUsers();
+            } catch (error) {
+                console.error('Error creating account:', error);
+                showNotification(error.message, 'error');
+            }
+        });
+    }
+});
+
+// Load feedback
+async function loadFeedback() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/feedback`, {
+            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
+        });
+        
+        if (!response.ok) throw new Error('Failed to load feedback');
+        
+        const feedbackList = await response.json();
+        const container = document.getElementById('feedbackList');
+        const countBadge = document.getElementById('feedbackCount');
+        
+        countBadge.textContent = feedbackList.length;
+        
+        if (feedbackList.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;">No feedback yet</p>';
+            return;
+        }
+        
+        container.innerHTML = feedbackList.map(fb => `
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <span class="feedback-user">
+                        <i class="fas fa-user"></i> ${fb.userName || fb.userEmail}
+                    </span>
+                    <span class="feedback-date">${new Date(fb.createdAt).toLocaleString()}</span>
+                </div>
+                <div class="feedback-message">${fb.message}</div>
+                ${fb.reply ? `
+                    <div class="feedback-reply">
+                        <strong>Admin Reply:</strong> ${fb.reply}
+                    </div>
+                ` : `
+                    <button class="btn-primary" onclick="replyToFeedback('${fb._id}')">
+                        <i class="fas fa-reply"></i> Reply
+                    </button>
+                `}
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading feedback:', error);
+        showNotification('Failed to load feedback', 'error');
+    }
+}
+
+// Reply to feedback
+async function replyToFeedback(feedbackId) {
+    const reply = prompt('Enter your reply:');
+    if (!reply) return;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/feedback/${feedbackId}/reply`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            },
+            body: JSON.stringify({ reply })
+        });
+        
+        if (!response.ok) throw new Error('Failed to send reply');
+        
+        showNotification('Reply sent successfully', 'success');
+        await loadFeedback();
+    } catch (error) {
+        console.error('Error replying to feedback:', error);
+        showNotification('Failed to send reply', 'error');
+    }
+}
+

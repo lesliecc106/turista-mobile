@@ -351,7 +351,102 @@
         <div class="page hidden" id="reportsPage">
         <div id="reportsContent"></div>
     </div>
-        <div class="page hidden" id="dataPage"></div>
+        <div class="page hidden" id="dataPage">
+            <div class="data-manager-container">
+                <!-- Header -->
+                <div class="data-header">
+                    <h2 class="page-title">
+                        <i class="fas fa-database"></i> Data Manager
+                    </h2>
+                    <p class="page-subtitle">Manage users, approvals, and feedback</p>
+                </div>
+
+                <!-- Section 1: Pending Approvals -->
+                <div class="data-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-user-clock"></i> Pending Approvals</h3>
+                        <span class="badge" id="pendingCount">0</span>
+                    </div>
+                    <div id="pendingApprovals" class="approvals-grid">
+                        <!-- Pending approvals will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Section 2: Users Information -->
+                <div class="data-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-users"></i> Users Management</h3>
+                        <button class="btn-secondary" onclick="refreshUsers()">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 3: Create New Account -->
+                <div class="data-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-user-plus"></i> Create New Account</h3>
+                    </div>
+                    <form id="createAccountForm" class="create-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-id-card"></i> Full Name</label>
+                                <input type="text" name="fullName" placeholder="Enter full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Username</label>
+                                <input type="text" name="username" placeholder="Unique username" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-lock"></i> Password</label>
+                                <input type="password" name="password" placeholder="Enter password" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-user-tag"></i> Account Type</label>
+                                <select name="role" required>
+                                    <option value="">Select role</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="establishment">Establishment</option>
+                                    <option value="tourist">Tourist</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus-circle"></i> Create Account
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Section 4: Feedback Records -->
+                <div class="data-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-comments"></i> Feedback Records</h3>
+                        <span class="badge" id="feedbackCount">0</span>
+                    </div>
+                    <div id="feedbackList" class="feedback-list">
+                        <!-- Feedback items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="page hidden" id="dashboardPage">
             <div id="dashboardContent">
                 <div class="dashboard-header">
