@@ -63,12 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 province: surveyData.province,
                 code: surveyData.code || '',
                 enumerator: surveyData.enumerator,
-                visitDate: surveyData.surveyDate,  // Using survey date as visit date
+                visitDate: surveyData.visitDate,  // Using survey date as visit date
                 residence: `${surveyData.residenceCity || ''}, ${surveyData.residenceProvince || ''}`.trim(),
                 purpose: surveyData.purpose || surveyData.purposeOther || '',
                 transport: surveyData.transport || '',
-                groupSize: parseInt(surveyData.persons) || 0,
-                stay: surveyData.overnight === 'yes' ? `${surveyData.nightsCount || 0} nights` : 'Day trip',
+                groupSize: parseInt(surveyData.groupSize) || 0,
+                stay: surveyData.stay || "Day trip",
                 nationalityRows: surveyData.nationalityRows
             };
 
