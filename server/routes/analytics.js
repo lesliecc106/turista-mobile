@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const pool = require('../db');
+const { requireAuth } = require('../middleware/auth');
+
 
 // Dashboard Statistics
 router.get('/dashboard-stats', requireAuth, async (req, res) => {
@@ -38,7 +41,6 @@ router.get('/chart-data', requireAuth, async (req, res) => {
     }
 });
 const pool = require('../config/database');
-const { requireAuth } = require('../middleware/auth');
 
 // Get survey history (all submitted surveys)
 router.get('/history', requireAuth, async (req, res) => {
