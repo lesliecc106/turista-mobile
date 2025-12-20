@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/database');
+const pool = require('../db');
 
 // Get Regional Distribution
 router.get('/', async (req, res) => {

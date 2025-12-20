@@ -39,6 +39,10 @@ app.use('/api/surveys', require('./routes/surveys'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/dashboard', require('./routes/dashboard_stats'));
+app.use('/api/analytics', require('./routes/analytics'));
+app.use('/api/regional', require('./routes/regional'));
+app.use('/api/reports', require('./routes/reports'));
+app.use('/api/create-tables', require('./routes/create-missing-tables'));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
