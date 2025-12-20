@@ -32,7 +32,7 @@ router.get('/dashboard-stats', async (req, res) => {
         res.json({
             totalSurveys: totalSurveys,
             accommodationSurveys: parseInt(accomResult.rows[0].count),
-            daytripSurveys: parseInt(attractionResult.rows[0].count),
+            attractionSurveys: parseInt(attractionResult.rows[0].count),
             totalVisitors: totalVisitors
         });
 

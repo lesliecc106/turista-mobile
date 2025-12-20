@@ -537,7 +537,7 @@ async function loadStats() {
         if (statCards.length >= 4) {
             statCards[0].textContent = statsData.totalSurveys || 0;
             statCards[1].textContent = statsData.accommodationSurveys || 0;
-            statCards[2].textContent = statsData.daytripSurveys || 0;
+            statCards[2].textContent = statsData.attractionSurveys || 0;
             statCards[3].textContent = statsData.totalVisitors || 0;
         }
 
@@ -591,11 +591,11 @@ async function loadStats() {
             window.surveyTypePieInstance = new Chart(pieCtx, {
                 type: 'pie',
                 data: {
-                    labels: ['Accommodation', 'Day Trip'],
+                    labels: ['Accommodation', 'Attraction'],
                     datasets: [{
                         data: [
                             chartData.surveyTypes?.accommodation || 0,
-                            chartData.surveyTypes?.daytrip || 0
+                            chartData.surveyTypes?.attraction || 0
                         ],
                         backgroundColor: [
                             'rgba(75, 192, 192, 0.8)',
@@ -762,7 +762,7 @@ async function submitAttractionSurvey() {
         purpose: document.getElementById('attr_purpose').value,
         transport: document.getElementById('attr_transport').value,
         groupSize: parseInt(document.getElementById('attr_group_size').value),
-        stay: 'Day Trip',
+        stay: 'Attraction',
         nationalityRows: [{
             nat: document.getElementById('attr_nationality').value,
             count: parseInt(document.getElementById('attr_count').value)
