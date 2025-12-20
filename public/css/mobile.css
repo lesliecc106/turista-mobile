@@ -312,6 +312,9 @@ body {
 .page.hidden {
     display: none;
 }
+.page.active {
+    display: block;
+}
 
 @keyframes fadeIn {
     from { opacity: 0; }
@@ -1301,4 +1304,9 @@ input[readonly] {
     .page-title {
         font-size: 20px;
     }
+}
+
+/* Page visibility fix */
+.page.active {
+    display: block;
 }
