@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const pool = require('../config/database');
+const pool = require('../db');
 
 // Middleware to check admin access
 const requireAdmin = (req, res, next) => {

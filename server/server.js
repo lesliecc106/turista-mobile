@@ -35,6 +35,10 @@ app.use('/api/fix-schema', require('./routes/fix-schema'));
 app.use('/api/restore', require('./routes/restore-admins'));
 app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/schema', require('./routes/update-schema'));
+app.use('/api/surveys', require('./routes/surveys'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/admin', require('./routes/admin'));
+app.use('/api/dashboard', require('./routes/dashboard_stats'));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
