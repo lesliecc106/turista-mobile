@@ -298,7 +298,7 @@ async function handleAccommodationFormSubmit(e) {
         enumerator: surveyData.enumerator,
         checkinDate: surveyData.checkinDate,
         checkoutDate: surveyData.checkoutDate,
-        purpose: surveyData.purpose || surveyData.purposeOtherAccom || '',
+        purpose: surveyData.purposeAccom || surveyData.purposeOtherAccom || '',
         source: surveyData.source || '',
         roomNights: parseInt(surveyData.roomNights) || 0,
         transport: surveyData.transport || '',
