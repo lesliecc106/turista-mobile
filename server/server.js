@@ -31,6 +31,7 @@ app.use(session({
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/migrate', require('./routes/migrate'));
 app.use('/api/surveys', require('./routes/surveys'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/reports', require('./routes/reports'));
