@@ -1,3 +1,8 @@
+// API Configuration
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:8080' 
+    : 'https://backend-production-92c2.up.railway.app';
+
 // Touris-Ta Mobile App - Main Application Logic
 // For COMPLETE version with all features, copy Section 11 from document
 
