@@ -1368,7 +1368,7 @@ async function loadRegionalData() {
     const year = document.getElementById('report_year').value;
     
     try {
-        const response = await fetch(`${API_BASE}/api/regional/data?city=${city}&province=${province}&year=${year}`, {
+        const response = await fetch(`${API_BASE}/api/analytics/regional-data?city=${city}&province=${province}&year=${year}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -1462,7 +1462,7 @@ async function saveRegionalData() {
     };
     
     try {
-        const response = await fetch(`${API_BASE}/api/regional/save`, {
+        const response = await fetch(`${API_BASE}/api/analytics/regional-data/save`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
