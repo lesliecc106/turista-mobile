@@ -6,7 +6,6 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
@@ -36,3 +35,8 @@ app.use('/api/fix-schema', require('./routes/fix-schema'));
 app.use('/api/restore', require('./routes/restore-admins'));
 app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/schema', require('./routes/update-schema'));
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log('Server running on port ' + PORT);
+});
