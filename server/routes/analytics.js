@@ -59,27 +59,36 @@ router.get('/regional-data', requireAuth, async (req, res) => {
 });
 
 // Get dashboard statistics
+
 router.get('/dashboard/stats', requireAuth, async (req, res) => {
     try {
+        // Add safety check
+        if (!req.session || !req.session.user || !req.session.user.username) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const username = req.session.user.username;
+
         // Total surveys
         const attractionCount = await pool.query(
             'SELECT COUNT(*) FROM attraction_surveys WHERE owner = $1',
-            [req.session.user.username]
+            [username]
         );
+        
         const accommodationCount = await pool.query(
             'SELECT COUNT(*) FROM accommodation_surveys WHERE owner = $1',
-            [req.session.user.username]
+            [username]
         );
-
+        
         // Total visitors (from regional distribution)
         const visitorCount = await pool.query(
-            'SELECT SUM(count) FROM regional_distribution WHERE owner = $1',
-            [req.session.user.username]
+            'SELECT COALESCE(SUM(count), 0) as sum FROM regional_distribution WHERE owner = $1',
+            [username]
         );
-
+        
         // Monthly breakdown
         const monthlyData = await pool.query(
-            `SELECT 
+            `SELECT
                 TO_CHAR(survey_date, 'YYYY-MM') as month,
                 COUNT(*) as count
              FROM (
@@ -90,9 +99,9 @@ router.get('/dashboard/stats', requireAuth, async (req, res) => {
              GROUP BY month
              ORDER BY month DESC
              LIMIT 12`,
-            [req.session.user.username, req.session.user.username]
+            [username, username]
         );
-
+        
         // Top nationalities
         const topNationalities = await pool.query(
             `SELECT origin as country, SUM(count) as total
@@ -101,9 +110,9 @@ router.get('/dashboard/stats', requireAuth, async (req, res) => {
              GROUP BY origin
              ORDER BY total DESC
              LIMIT 10`,
-            [req.session.user.username]
+            [username]
         );
-
+        
         res.json({
             totalSurveys: parseInt(attractionCount.rows[0].count) + parseInt(accommodationCount.rows[0].count),
             attractionSurveys: parseInt(attractionCount.rows[0].count),
@@ -114,10 +123,10 @@ router.get('/dashboard/stats', requireAuth, async (req, res) => {
         });
     } catch (error) {
         console.error('Dashboard stats error:', error);
-        res.status(500).json({ error: 'Failed to fetch dashboard statistics' });
+        console.error('Error stack:', error.stack);
+        res.status(500).json({ error: 'Failed to fetch dashboard statistics', details: error.message });
     }
 });
-
 // Get regional distribution report data (for Excel export)
 router.get('/reports/regional-distribution', requireAuth, async (req, res) => {
     try {

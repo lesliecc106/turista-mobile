@@ -1173,7 +1173,6 @@ const COUNTRY_GROUPS = {
     ]
 };
 
-function buildDistributionTable() {
     const tbody = document.getElementById('distributionTableBody');
     let html = '';
     
@@ -1488,7 +1487,6 @@ async function saveRegionalData() {
 // Initialize regional page
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('regionalPage')) {
-        buildDistributionTable();
         calculateRegionalTotals();
         calculateOccupancy();
     }
