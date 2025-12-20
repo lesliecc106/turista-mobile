@@ -359,6 +359,24 @@
                         <div class="stat-icon blue">
                             <i class="fas fa-clipboard-list"></i>
                         </div>
+
+        <!-- Analytics Charts -->
+        <div class="charts-container" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+            <!-- Monthly Trend Chart -->
+            <div class="chart-card" style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <canvas id="monthlyChart" style="height: 300px;"></canvas>
+            </div>
+            
+            <!-- Survey Type Pie Chart -->
+            <div class="chart-card" style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <canvas id="surveyTypePie" style="height: 300px;"></canvas>
+            </div>
+            
+            <!-- Nationality Distribution Chart -->
+            <div class="chart-card" style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <canvas id="nationalityPie" style="height: 300px;"></canvas>
+            </div>
+        </div>
                         <div class="stat-info">
                             <p class="stat-label">Total Surveys</p>
                             <h3 class="stat-value" id="statSurveys">0</h3>
