@@ -136,8 +136,8 @@
                         <i class="fas fa-building"></i>
                     </div>
                     <div class="stat-info">
-                        <p class="stat-label">Establishments</p>
-                        <h3 class="stat-value" id="statEstablishments">0</h3>
+                        <p class="stat-label">Attraction Surveys</p>
+                        <h3 class="stat-value" id="statAttractions">0</h3>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -156,6 +156,15 @@
                     <div class="stat-info">
                         <p class="stat-label">Visitors</p>
                         <h3 class="stat-value" id="statVisitors">0</h3>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <i class="fas fa-hotel"></i>
+                </div>
+                <div class="stat-info">
+                    <p class="stat-label">Accommodation Surveys</p>
+                    <h3 class="stat-value" id="statAccommodations">0</h3>
                     </div>
                 </div>
             </div>
@@ -265,6 +274,8 @@
                                 <!-- Data will be populated by JavaScript -->
                             </tbody>
                         </table>
+                </div>
+                <div id="regionalContent"></div>
                     </div>
                 </div>
 
@@ -372,9 +383,13 @@
                 </div>
             </div>
         </div>
-        <div class="page hidden" id="historyPage"></div>
+        <div class="page hidden" id="historyPage">
+        <div id="historyContent"></div>
+    </div>
         <div class="page hidden" id="feedbackPage"></div>
-        <div class="page hidden" id="reportsPage"></div>
+        <div class="page hidden" id="reportsPage">
+        <div id="reportsContent"></div>
+    </div>
         <div class="page hidden" id="dataPage"></div>
         <div class="page hidden" id="attractionSurveyPage">
     <div class="survey-header">
