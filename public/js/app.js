@@ -390,10 +390,8 @@ function loadPageData(pageId) {
     switch(pageId) {
         case 'homePage':
         case 'dashboardPage':
-            loadDashboardAnalytics();
             loadStats();
             break;
-            loadDashboardAnalytics();
             loadStats();
             break;
         case 'historyPage':
