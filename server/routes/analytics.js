@@ -40,7 +40,6 @@ router.get('/chart-data', requireAuth, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch chart data' });
     }
 });
-const pool = require('../config/database');
 
 // Get survey history (all submitted surveys)
 router.get('/history', requireAuth, async (req, res) => {
