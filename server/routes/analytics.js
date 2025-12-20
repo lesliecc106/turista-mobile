@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Dashboard Statistics
-router.get('/dashboard-stats', async (req, res) => {
+router.get('/dashboard-stats', requireAuth, async (req, res) => {
     try {
         const username = req.session.user.username;
         const totalResult = await pool.query('SELECT COUNT(*) as count FROM surveys WHERE owner = $1', [username]);
@@ -21,7 +21,7 @@ router.get('/dashboard-stats', async (req, res) => {
     }
 });
 
-router.get('/chart-data', async (req, res) => {
+router.get('/chart-data', requireAuth, async (req, res) => {
     try {
         const username = req.session.user.username;
         const monthlyResult = await pool.query(`SELECT TO_CHAR(created_at, 'Mon YYYY') as month, COUNT(*) as count FROM surveys WHERE owner = $1 AND created_at >= NOW() - INTERVAL '6 months' GROUP BY TO_CHAR(created_at, 'Mon YYYY'), DATE_TRUNC('month', created_at) ORDER BY DATE_TRUNC('month', created_at)`, [username]);
