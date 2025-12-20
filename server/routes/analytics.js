@@ -3,43 +3,36 @@ const router = express.Router();
 const pool = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
-// Dashboard Statistics - FIXED to use correct table names
+// Dashboard Statistics - FIXED column names
 router.get('/dashboard-stats', requireAuth, async (req, res) => {
     try {
         const username = req.session.user.username;
         
-        // Get attraction surveys count
         const attractionResult = await pool.query(
             'SELECT COUNT(*) as count FROM attraction_surveys WHERE owner = $1', 
             [username]
         );
         
-        // Get accommodation surveys count
         const accomResult = await pool.query(
             'SELECT COUNT(*) as count FROM accommodation_surveys WHERE owner = $1', 
             [username]
         );
         
-        // Calculate total surveys
         const totalSurveys = parseInt(attractionResult.rows[0].count) + parseInt(accomResult.rows[0].count);
         
-        // Get total visitors from both tables
+        // Use group_size for attractions (no visitor count field for accommodations)
         const attractionVisitors = await pool.query(
-            'SELECT COALESCE(SUM(CAST(party_size AS INTEGER)), 0) as total FROM attraction_surveys WHERE owner = $1', 
+            'SELECT COALESCE(SUM(CAST(group_size AS INTEGER)), 0) as total FROM attraction_surveys WHERE owner = $1', 
             [username]
         );
         
-        const accomVisitors = await pool.query(
-            'SELECT COALESCE(SUM(CAST(party_size AS INTEGER)), 0) as total FROM accommodation_surveys WHERE owner = $1', 
-            [username]
-        );
-        
-        const totalVisitors = parseInt(attractionVisitors.rows[0].total) + parseInt(accomVisitors.rows[0].total);
+        // For accommodations, we can estimate visitors from room_nights or just count surveys
+        const totalVisitors = parseInt(attractionVisitors.rows[0].total) + parseInt(accomResult.rows[0].count);
         
         res.json({
             totalSurveys: totalSurveys,
             accommodationSurveys: parseInt(accomResult.rows[0].count),
-            daytripSurveys: parseInt(attractionResult.rows[0].count), // Using attraction as daytrip
+            daytripSurveys: parseInt(attractionResult.rows[0].count),
             totalVisitors: totalVisitors
         });
     } catch (error) {
@@ -48,12 +41,10 @@ router.get('/dashboard-stats', requireAuth, async (req, res) => {
     }
 });
 
-// Chart Data - FIXED to use correct table names
 router.get('/chart-data', requireAuth, async (req, res) => {
     try {
         const username = req.session.user.username;
         
-        // Get monthly data from both tables
         const monthlyQuery = `
             SELECT TO_CHAR(created_at, 'Mon YYYY') as month, COUNT(*) as count,
                    DATE_TRUNC('month', created_at) as month_date
@@ -69,7 +60,6 @@ router.get('/chart-data', requireAuth, async (req, res) => {
         
         const monthlyResult = await pool.query(monthlyQuery, [username]);
         
-        // Get survey type counts
         const attractionCount = await pool.query(
             'SELECT COUNT(*) as count FROM attraction_surveys WHERE owner = $1',
             [username]
@@ -80,7 +70,6 @@ router.get('/chart-data', requireAuth, async (req, res) => {
             [username]
         );
         
-        // Get nationality data from regional_distribution table
         const nationalityResult = await pool.query(
             `SELECT origin as nationality, SUM(count) as count 
              FROM regional_distribution 
@@ -111,7 +100,6 @@ router.get('/chart-data', requireAuth, async (req, res) => {
     }
 });
 
-// Get survey history (all submitted surveys)
 router.get('/history', requireAuth, async (req, res) => {
     try {
         const attractionSurveys = await pool.query(
@@ -144,7 +132,6 @@ router.get('/history', requireAuth, async (req, res) => {
     }
 });
 
-// Get regional distribution data
 router.get('/regional-data', requireAuth, async (req, res) => {
     try {
         const result = await pool.query(
@@ -163,35 +150,26 @@ router.get('/regional-data', requireAuth, async (req, res) => {
     }
 });
 
-// Get regional distribution report
 router.get('/reports/regional-distribution', requireAuth, async (req, res) => {
     try {
         const year = req.query.year || new Date().getFullYear();
 
         const result = await pool.query(
-            `SELECT
-                origin as country,
-                EXTRACT(MONTH FROM created_at) as month,
-                SUM(count) as count
+            `SELECT origin as country, EXTRACT(MONTH FROM created_at) as month, SUM(count) as count
              FROM regional_distribution
-             WHERE owner = $1
-               AND EXTRACT(YEAR FROM created_at) = $2
+             WHERE owner = $1 AND EXTRACT(YEAR FROM created_at) = $2
              GROUP BY origin, month
              ORDER BY country, month`,
             [req.session.user.username, year]
         );
 
-        res.json({
-            year: year,
-            data: result.rows
-        });
+        res.json({ year: year, data: result.rows });
     } catch (error) {
         console.error('Regional distribution report error:', error);
         res.status(500).json({ error: 'Failed to generate report' });
     }
 });
 
-// Save regional distribution data
 router.post('/regional-data/save', requireAuth, async (req, res) => {
     try {
         const { year, distribution } = req.body;
