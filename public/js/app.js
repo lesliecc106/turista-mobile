@@ -72,40 +72,41 @@ function setupEventListeners() {
         });
     }
 
+
 // ==================== SURVEY FORM SUBMISSION ====================
 async function submitSurveyForm(surveyType, form) {
     const formData = new FormData(form);
-    const data = {
-        survey_type: surveyType,
-        submitted_by: currentUser.user_id,
-        submission_date: new Date().toISOString()
-    };
+    const data = {};
 
     // Collect all form fields
     for (let [key, value] of formData.entries()) {
         data[key] = value;
     }
 
-    // Handle nationality list for attraction surveys
-    if (surveyType === 'attraction') {
-        const nationalities = [];
-        document.querySelectorAll('.nationality-row').forEach(row => {
-            const nationality = row.querySelector('select[name="nationality"]')?.value;
-            const count = row.querySelector('input[name="nationality_count"]')?.value;
-            if (nationality && count) {
-                nationalities.push({ nationality, count: parseInt(count) });
-            }
-        });
-        data.nationalities = nationalities;
-    }
+    // Collect nationality data
+    const nationalityRows = [];
+    document.querySelectorAll('.nationality-row').forEach(row => {
+        const nationality = row.querySelector('select[name="nationality"]')?.value;
+        const count = row.querySelector('input[name="nationality_count"]')?.value;
+        if (nationality && count) {
+            nationalityRows.push({ 
+                nat: nationality, 
+                count: parseInt(count) 
+            });
+        }
+    });
+    data.nationalityRows = nationalityRows;
+
+    // Use the correct endpoint based on survey type
+    const endpoint = `${API_BASE}/api/surveys/${surveyType}`;
 
     try {
-        const response = await fetch(`${API_BASE}/api/surveys/submit`, {
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Content-Type': 'application/json'
             },
+            credentials: 'include', // Important for session-based auth
             body: JSON.stringify(data)
         });
 
@@ -113,21 +114,20 @@ async function submitSurveyForm(surveyType, form) {
             showToast('Survey submitted successfully!', 'success');
             form.reset();
             
-            // Reset nationality section if it's attraction survey
-            if (surveyType === 'attraction') {
-                hideNationalitySection();
-            }
+            // Reset nationality section
+            hideNationalitySection();
             
             navigate('homePage');
         } else {
             const error = await response.json();
-            showToast(error.message || 'Failed to submit survey', 'error');
+            showToast(error.error || 'Failed to submit survey', 'error');
         }
     } catch (error) {
         console.error('Survey submission error:', error);
         showToast('Network error. Please try again.', 'error');
     }
 }
+
 
     
     document.getElementById('fab').addEventListener('click', () => navigate('submitPage'));
