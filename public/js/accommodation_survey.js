@@ -304,9 +304,6 @@ async function handleAccommodationFormSubmit(e) {
         transport: surveyData.transport || '',
         nationalityRows: surveyData.nationalityRows
     };
-        sex: surveyData.sexAccom,
-        nationalityRows: surveyData.nationalityRows
-    };
     
     console.log('Accommodation Survey Data:', apiData);
     
