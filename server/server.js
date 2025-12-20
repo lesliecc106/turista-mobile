@@ -46,3 +46,6 @@ app.use((err, req, res, next) => {
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 TURIS-TA Mobile Server running on port ${PORT}`);
 });
+
+// Migration endpoint (add before app.listen)
+app.use('/api/migrate', require('./routes/migrate'));
