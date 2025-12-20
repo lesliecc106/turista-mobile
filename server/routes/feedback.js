@@ -74,3 +74,31 @@ router.post('/:id/reply', async (req, res) => {
 });
 
 module.exports = router;
+
+// User replies back to admin's reply
+router.post('/:id/reply-back', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { replyBack, username } = req.body;
+        
+        // Update feedback with user's reply
+        await pool.query(
+            'UPDATE feedback SET user_reply_back = $1, user_reply_date = NOW() WHERE id = $2',
+            [replyBack, id]
+        );
+        
+        // Notify all admins
+        const admins = await pool.query("SELECT username FROM users WHERE role = 'admin' AND status = 'approved'");
+        for (const admin of admins.rows) {
+            await pool.query(
+                'INSERT INTO notifications (username, subject, body) VALUES ($1, $2, $3)',
+                [admin.username, 'User replied to feedback', `${username} replied: ${replyBack}`]
+            );
+        }
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Reply back error:', error);
+        res.status(500).json({ error: 'Failed to send reply' });
+    }
+});
