@@ -289,23 +289,21 @@ async function handleAccommodationFormSubmit(e) {
     
     // Map to backend format
     const apiData = {
-        surveyDate: surveyData.dateAccomplished,
-        accommodationName: surveyData.accommodationName,
+        surveyDate: surveyData.surveyDate,
+        establishmentName: surveyData.establishmentName,
         aeType: surveyData.aeType,
-        numberOfRooms: parseInt(surveyData.numberOfRooms) || 0,
-        city: surveyData.cityAccom,
-        province: surveyData.provinceAccom,
-        enumerator: surveyData.enumeratorAccom,
-        residence: `${surveyData.residenceCityAccom || ''}, ${surveyData.residenceProvinceAccom || ''}`.trim() || surveyData.foreignCountryAccom || 'In City',
-        nightsStayed: parseInt(surveyData.nightsStayed) || 0,
-        purpose: surveyData.purposeAccom === 'other' ? surveyData.purposeOtherAccom : surveyData.purposeAccom,
-        attractions: surveyData.attractions,
-        groupSize: parseInt(surveyData.groupSizeAccom) || 1,
-        travelingWith: surveyData.travelingWith === 'other' ? surveyData.travelingWithOther : surveyData.travelingWith,
-        currency: surveyData.currencyAccom === 'other' ? surveyData.currencyOtherAccom : surveyData.currencyAccom,
-        amount: parseFloat(surveyData.amountAccom) || 0,
-        personsExpense: parseInt(surveyData.personsExpenseAccom) || 1,
-        age: parseInt(surveyData.ageAccom) || 0,
+        numRooms: parseInt(surveyData.numRooms) || 0,
+        city: surveyData.city,
+        province: surveyData.province,
+        enumerator: surveyData.enumerator,
+        checkinDate: surveyData.checkinDate,
+        checkoutDate: surveyData.checkoutDate,
+        purpose: surveyData.purpose || surveyData.purposeOtherAccom || '',
+        source: surveyData.source || '',
+        roomNights: parseInt(surveyData.roomNights) || 0,
+        transport: surveyData.transport || '',
+        nationalityRows: surveyData.nationalityRows
+    };
         sex: surveyData.sexAccom,
         nationalityRows: surveyData.nationalityRows
     };
