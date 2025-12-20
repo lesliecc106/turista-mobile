@@ -32,12 +32,14 @@ router.post('/attraction', requireAuth, async (req, res) => {
         );
         
         // Add to regional distribution
-        for (const row of nationalityRows) {
-            await pool.query(
-                `INSERT INTO regional_distribution (origin, count, is_manual, owner)
-                 VALUES ($1, $2, false, $3)`,
-                [row.nat, row.count, req.session.user.username]
-            );
+        if (nationalityRows && nationalityRows.length > 0) {
+            for (const row of nationalityRows) {
+                await pool.query(
+                    `INSERT INTO regional_distribution (origin, count, is_manual, owner)
+                     VALUES ($1, $2, false, $3)`,
+                    [row.nat, row.count, req.session.user.username]
+                );
+            }
         }
         
         res.json({ success: true, id: result.rows[0].id });
@@ -69,12 +71,14 @@ router.post('/accommodation', requireAuth, async (req, res) => {
         );
         
         // Add to regional distribution
-        for (const row of nationalityRows) {
-            await pool.query(
-                `INSERT INTO regional_distribution (origin, count, is_manual, owner)
-                 VALUES ($1, $2, false, $3)`,
-                [row.nat, row.count, req.session.user.username]
-            );
+        if (nationalityRows && nationalityRows.length > 0) {
+            for (const row of nationalityRows) {
+                await pool.query(
+                    `INSERT INTO regional_distribution (origin, count, is_manual, owner)
+                     VALUES ($1, $2, false, $3)`,
+                    [row.nat, row.count, req.session.user.username]
+                );
+            }
         }
         
         res.json({ success: true, id: result.rows[0].id });
