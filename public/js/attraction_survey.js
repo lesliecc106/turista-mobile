@@ -113,3 +113,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Ensure at least one nationality entry before submission
+document.querySelector('#attractionSurveyForm').addEventListener('submit', function(e) {
+    const nationalityRows = document.querySelectorAll('.nationality-row');
+    if (nationalityRows.length === 0) {
+        e.preventDefault();
+        alert('Please add at least one nationality entry in Q9');
+        return false;
+    }
+});

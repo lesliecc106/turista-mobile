@@ -28,7 +28,7 @@ router.post('/attraction', requireAuth, async (req, res) => {
              RETURNING id`,
             [surveyDate, attractionName, city, province, code, enumerator,
              visitDate, residence, purpose, transport, groupSize, stay,
-             JSON.stringify(nationalityRows || []), req.session.user.username]
+             JSON.stringify(nationalityRows), req.session.user.username]
         );
         
         // Add to regional distribution
@@ -65,7 +65,7 @@ router.post('/accommodation', requireAuth, async (req, res) => {
              RETURNING id`,
             [surveyDate, establishmentName, aeType, numRooms, city, province,
              enumerator, checkinDate, checkoutDate, purpose, source,
-             roomNights, transport, JSON.stringify(nationalityRows || []), req.session.user.username]
+             roomNights, transport, JSON.stringify(nationalityRows), req.session.user.username]
         );
         
         // Add to regional distribution
