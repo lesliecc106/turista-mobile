@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Map form fields to backend expected format
             const apiData = {
                 surveyDate: surveyData.surveyDate,
-                attractionName: surveyData.attraction,
+                attractionName: surveyData.attractionName,
                 city: surveyData.city,
                 province: surveyData.province,
                 code: surveyData.code || '',
