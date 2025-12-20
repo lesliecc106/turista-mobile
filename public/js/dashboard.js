@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadDashboardData() {
     console.log('Fetching dashboard stats...');
     try {
-        const response = await fetch('/api/analytics/dashboard-stats');
+        const response = await fetch('/api/analytics/dashboard-stats', { credentials: 'include' });
         console.log('Dashboard stats response:', response.status);
 
         if (!response.ok) {
@@ -72,7 +72,7 @@ function animateNumbers(elements, data) {
 async function loadCharts() {
     console.log('Fetching chart data...');
     try {
-        const response = await fetch('/api/analytics/chart-data');
+        const response = await fetch('/api/analytics/chart-data', { credentials: 'include' });
         console.log('Chart data response:', response.status);
 
         if (!response.ok) {
