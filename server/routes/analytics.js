@@ -230,10 +230,4 @@ router.post('/regional-data/save', requireAuth, async (req, res) => {
 });
 
 
-// Get regional distribution data for a specific year
-        res.status(500).json({ error: 'Failed to load regional data' });
-    }
-});
-
-
 module.exports = router;
