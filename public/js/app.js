@@ -853,6 +853,15 @@ async function submitFeedback(e) {
     }
 }
 
+// Show notification (singular)
+function showNotification(message, type) {
+    const notifDiv = document.createElement('div');
+    notifDiv.className = `notification ${type}`;
+    notifDiv.textContent = message;
+    document.body.appendChild(notifDiv);
+    setTimeout(() => notifDiv.remove(), 3000);
+}
+
 async function showNotifications() {
     showToast('No new notifications', 'info');
 }
