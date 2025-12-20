@@ -1041,23 +1041,23 @@
         <!-- Survey Details -->
         <div class="form-section">
             <label class="form-label">Date Accomplished (MM/DD/YYYY)</label>
-            <input type="date" class="form-input" id="dateAccomplished" required>
+            <input type="date" class="form-input" id="dateAccomplished" name="surveyDate" required>
         </div>
 
         <div class="form-section">
             <label class="form-label">Accommodation Establishment</label>
-            <input type="text" class="form-input" id="accommodationName" placeholder="Establishment name" required>
+            <input type="text" class="form-input" id="accommodationName" name="establishmentName" placeholder="Establishment name" required>
         </div>
 
         <div class="form-section">
             <div class="profile-group">
                 <div class="profile-item">
                     <label class="form-label">AE Type</label>
-                    <input type="text" class="form-input" id="aeType" placeholder="e.g., Hotel, Resort" required>
+                    <input type="text" class="form-input" id="aeType" name="aeType" placeholder="e.g., Hotel, Resort" required>
                 </div>
                 <div class="profile-item">
                     <label class="form-label">No. of Rooms</label>
-                    <input type="number" class="form-input" id="numberOfRooms" placeholder="Number of rooms" required>
+                    <input type="number" class="form-input" id="numberOfRooms" name="numRooms" placeholder="Number of rooms" required>
                 </div>
             </div>
         </div>
@@ -1066,18 +1066,18 @@
             <div class="profile-group">
                 <div class="profile-item">
                     <label class="form-label">City / Municipality</label>
-                    <input type="text" class="form-input" id="cityAccom" value="Iriga City" required>
+                    <input type="text" class="form-input" id="cityAccom" name="city" value="Iriga City" required>
                 </div>
                 <div class="profile-item">
                     <label class="form-label">Province</label>
-                    <input type="text" class="form-input" id="provinceAccom" value="Camarines Sur" required>
+                    <input type="text" class="form-input" id="provinceAccom" name="province" value="Camarines Sur" required>
                 </div>
             </div>
         </div>
 
         <div class="form-section">
             <label class="form-label">Enumerator</label>
-            <input type="text" class="form-input" id="enumeratorAccom" placeholder="Your name" required>
+            <input type="text" class="form-input" id="enumeratorAccom" name="enumerator" placeholder="Your name" required>
         </div>
 
         <button type="submit" class="btn btn-primary btn-block">
