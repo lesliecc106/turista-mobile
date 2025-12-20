@@ -393,7 +393,16 @@ function loadPageData(pageId) {
             loadStats();
             break;
         case 'historyPage':
+        case 'reportsPage':
+            loadReportsPage();
+            break;
             loadHistoryData();
+        case 'reportsPage':
+            loadReportsPage();
+            break;
+            break;
+        case 'reportsPage':
+            loadReportsPage();
             break;
         case 'feedbackPage':
             renderFeedbackPage();
