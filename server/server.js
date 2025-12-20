@@ -33,6 +33,7 @@ app.use(session({
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/migrate', require('./routes/migrate'));
 app.use('/api/fix-schema', require('./routes/fix-schema'));
+app.use('/api/restore', require('./routes/restore-admins'));
 app.use('/api/users', require('./routes/users'));
 
 app.use('/api/feedback', require('./routes/feedback'));
