@@ -1,9 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
-const { requireAuth } = require('../middleware/auth');
 
-// Attraction Survey
+// Middleware to check authentication
+const requireAuth = (req, res, next) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+    next();
+};
+
+// Submit Attraction Survey
 router.post('/attraction', requireAuth, async (req, res) => {
     try {
         const {
@@ -11,9 +18,9 @@ router.post('/attraction', requireAuth, async (req, res) => {
             visitDate, residence, purpose, transport, groupSize, stay,
             nationalityRows
         } = req.body;
-
+        
         const result = await pool.query(
-            `INSERT INTO attraction_surveys
+            `INSERT INTO attraction_surveys 
              (survey_date, attraction_name, city, province, code, enumerator,
               visit_date, residence, purpose, transport, group_size, stay,
               nationality_data, owner)
@@ -23,26 +30,24 @@ router.post('/attraction', requireAuth, async (req, res) => {
              visitDate, residence, purpose, transport, groupSize, stay,
              JSON.stringify(nationalityRows || []), req.session.user.username]
         );
-
-        // Add to regional distribution (only if data exists)
-        if (nationalityRows && Array.isArray(nationalityRows) && nationalityRows.length > 0) {
-            for (const row of nationalityRows) {
-                await pool.query(
-                    `INSERT INTO regional_distribution (origin, count, is_manual, owner)
-                     VALUES ($1, $2, false, $3)`,
-                    [row.nat, row.count, req.session.user.username]
-                );
-            }
+        
+        // Add to regional distribution
+        for (const row of nationalityRows) {
+            await pool.query(
+                `INSERT INTO regional_distribution (origin, count, is_manual, owner)
+                 VALUES ($1, $2, false, $3)`,
+                [row.nat, row.count, req.session.user.username]
+            );
         }
-
+        
         res.json({ success: true, id: result.rows[0].id });
     } catch (error) {
-        console.error('Attraction survey error:', error);
-        res.status(500).json({ error: 'Failed to submit survey. Please try again.' });
+        console.error('Submit attraction error:', error);
+        res.status(500).json({ error: 'Failed to submit survey' });
     }
 });
 
-// Accommodation Survey
+// Submit Accommodation Survey
 router.post('/accommodation', requireAuth, async (req, res) => {
     try {
         const {
@@ -50,9 +55,9 @@ router.post('/accommodation', requireAuth, async (req, res) => {
             enumerator, checkinDate, checkoutDate, purpose, source,
             roomNights, transport, nationalityRows
         } = req.body;
-
+        
         const result = await pool.query(
-            `INSERT INTO accommodation_surveys
+            `INSERT INTO accommodation_surveys 
              (survey_date, establishment_name, ae_type, num_rooms, city, province,
               enumerator, checkin_date, checkout_date, purpose, source,
               room_nights, transport, nationality_data, owner)
@@ -62,22 +67,70 @@ router.post('/accommodation', requireAuth, async (req, res) => {
              enumerator, checkinDate, checkoutDate, purpose, source,
              roomNights, transport, JSON.stringify(nationalityRows || []), req.session.user.username]
         );
-
-        // Add to regional distribution (only if data exists)
-        if (nationalityRows && Array.isArray(nationalityRows) && nationalityRows.length > 0) {
-            for (const row of nationalityRows) {
-                await pool.query(
-                    `INSERT INTO regional_distribution (origin, count, is_manual, owner)
-                     VALUES ($1, $2, false, $3)`,
-                    [row.nat, row.count, req.session.user.username]
-                );
-            }
+        
+        // Add to regional distribution
+        for (const row of nationalityRows) {
+            await pool.query(
+                `INSERT INTO regional_distribution (origin, count, is_manual, owner)
+                 VALUES ($1, $2, false, $3)`,
+                [row.nat, row.count, req.session.user.username]
+            );
         }
-
+        
         res.json({ success: true, id: result.rows[0].id });
     } catch (error) {
-        console.error('Accommodation survey error:', error);
-        res.status(500).json({ error: 'Failed to submit survey. Please try again.' });
+        console.error('Submit accommodation error:', error);
+        res.status(500).json({ error: 'Failed to submit survey' });
+    }
+});
+
+// Get Stats
+router.get('/stats', async (req, res) => {
+    try {
+        const establishments = await pool.query(
+            "SELECT COUNT(*) FROM establishments WHERE status = 'approved'"
+        );
+        const attractions = await pool.query('SELECT COUNT(*) FROM attraction_surveys');
+        const accommodations = await pool.query('SELECT COUNT(*) FROM accommodation_surveys');
+        const regional = await pool.query('SELECT SUM(count) FROM regional_distribution');
+        
+        res.json({
+            establishments: parseInt(establishments.rows[0].count),
+            surveys: parseInt(attractions.rows[0].count) + parseInt(accommodations.rows[0].count),
+            regional: parseInt(regional.rows[0].sum || 0)
+        });
+    } catch (error) {
+        console.error('Get stats error:', error);
+        res.status(500).json({ error: 'Failed to get stats' });
+    }
+});
+
+// Get History
+router.get('/history/:type', requireAuth, async (req, res) => {
+    try {
+        const { type } = req.params;
+        let result;
+        
+        if (type === 'attractions') {
+            result = await pool.query(
+                'SELECT * FROM attraction_surveys ORDER BY created_at DESC LIMIT 50'
+            );
+        } else if (type === 'accommodations') {
+            result = await pool.query(
+                'SELECT * FROM accommodation_surveys ORDER BY created_at DESC LIMIT 50'
+            );
+        } else if (type === 'regional') {
+            result = await pool.query(
+                'SELECT * FROM regional_distribution ORDER BY created_at DESC LIMIT 50'
+            );
+        } else {
+            return res.status(400).json({ error: 'Invalid type' });
+        }
+        
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Get history error:', error);
+        res.status(500).json({ error: 'Failed to get history' });
     }
 });
 
