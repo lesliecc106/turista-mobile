@@ -1386,7 +1386,6 @@ async function loadRegionalData() {
         showToast('Failed to load data', 'error');
     }
 }
-}
 
 function populateRegionalData(data) {
     // Populate distribution data
