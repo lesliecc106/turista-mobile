@@ -193,3 +193,39 @@ router.get('/surveys/accommodation/:id/nationalities', requireAuth, async (req, 
     }
 });
 
+
+// Save regional distribution data
+router.post('/regional-data/save', requireAuth, async (req, res) => {
+    try {
+        const { year, distribution, occupancy } = req.body;
+        
+        if (!distribution || !year) {
+            return res.status(400).json({ error: 'Missing required data' });
+        }
+
+        // Clear existing data for this user and year
+        await pool.query(
+            'DELETE FROM regional_distribution WHERE owner = $1 AND EXTRACT(YEAR FROM created_at) = $2',
+            [req.session.user.username, year]
+        );
+
+        // Insert new distribution data
+        for (const [country, months] of Object.entries(distribution)) {
+            for (const [month, count] of Object.entries(months)) {
+                if (count > 0) {
+                    await pool.query(
+                        `INSERT INTO regional_distribution (origin, count, survey_type, owner, created_at)
+                         VALUES ($1, $2, 'manual', $3, TO_DATE($4 || '-' || $5, 'YYYY-MM'))`,
+                        [country, count, req.session.user.username, year, month]
+                    );
+                }
+            }
+        }
+
+        res.json({ success: true, message: 'Regional data saved successfully' });
+    } catch (error) {
+        console.error('Save regional data error:', error);
+        res.status(500).json({ error: 'Failed to save regional data' });
+    }
+});
+
