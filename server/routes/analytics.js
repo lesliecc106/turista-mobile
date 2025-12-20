@@ -235,3 +235,5 @@ router.post('/regional-data/save', requireAuth, async (req, res) => {
     }
 });
 
+
+module.exports = router;
