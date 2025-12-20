@@ -346,6 +346,7 @@ function navigate(pageId) {
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
         targetPage.classList.remove('hidden');
+        targetPage.classList.add('active');
 
         // Toggle auth-active class for hiding nav elements
         if (pageId === 'authPage') {
