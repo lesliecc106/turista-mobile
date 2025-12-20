@@ -34,32 +34,5 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/migrate', require('./routes/migrate'));
 app.use('/api/fix-schema', require('./routes/fix-schema'));
 app.use('/api/restore', require('./routes/restore-admins'));
-app.use('/api/users', require('./routes/users'));
-
 app.use('/api/feedback', require('./routes/feedback'));
-app.use('/api/surveys', require('./routes/surveys'));
-app.use('/api/analytics', require('./routes/analytics'));
-app.use('/api/reports', require('./routes/reports'));
-app.use('/api/regional', require('./routes/regional'));
-app.use('/api/admin', require('./routes/admin'));
-
-// Serve index.html for all other routes
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
-});
-
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 TURIS-TA Mobile Server running on port ${PORT}`);
-});
-
-// Migration endpoint (add before app.listen)
-app.use('/api/migrate', require('./routes/migrate'));
-app.use('/api/users', require('./routes/users'));
-
-app.use('/api/feedback', require('./routes/feedback'));
+app.use('/api/schema', require('./routes/update-schema'));

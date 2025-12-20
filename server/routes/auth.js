@@ -54,6 +54,33 @@ router.post('/login', async (req, res) => {
 });
 
 // Signup
+router.post('/register', async (req, res) => {
+    try {
+        const { username, password, name, email, role } = req.body;
+        const bcrypt = require('bcrypt');
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const result = await pool.query(
+            'INSERT INTO users (username, password, name, email, role, status) VALUES ($1, $2, $3, $4, $5, 'pending') RETURNING id',
+            [username, hashedPassword, name, email, role]
+        );
+        
+        await pool.query(
+            'INSERT INTO notifications (username, subject, body) VALUES ('admin01', 'New signup pending', $1)',
+            [`New account ${username} created and awaiting approval.`]
+        );
+        
+        res.json({ success: true, message: 'Account created successfully' });
+    } catch (error) {
+        console.error('Register error:', error);
+        if (error.code === '23505') {
+            res.status(400).json({ error: 'Username already exists' });
+        } else {
+            res.status(500).json({ error: 'Registration failed' });
+        }
+    }
+});
+
 router.post('/signup', async (req, res) => {
     try {
         const { username, password, name, email, role } = req.body;
