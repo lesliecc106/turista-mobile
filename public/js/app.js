@@ -54,6 +54,81 @@ function setupEventListeners() {
             navigate(page);
         });
     });
+
+    // Survey form submissions
+    const attractionForm = document.getElementById('attractionForm');
+    if (attractionForm) {
+        attractionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitSurveyForm('attraction', attractionForm);
+        });
+    }
+
+    const accommodationForm = document.getElementById('accommodationForm');
+    if (accommodationForm) {
+        accommodationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitSurveyForm('accommodation', accommodationForm);
+        });
+    }
+
+// ==================== SURVEY FORM SUBMISSION ====================
+async function submitSurveyForm(surveyType, form) {
+    const formData = new FormData(form);
+    const data = {
+        survey_type: surveyType,
+        submitted_by: currentUser.user_id,
+        submission_date: new Date().toISOString()
+    };
+
+    // Collect all form fields
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+
+    // Handle nationality list for attraction surveys
+    if (surveyType === 'attraction') {
+        const nationalities = [];
+        document.querySelectorAll('.nationality-row').forEach(row => {
+            const nationality = row.querySelector('select[name="nationality"]')?.value;
+            const count = row.querySelector('input[name="nationality_count"]')?.value;
+            if (nationality && count) {
+                nationalities.push({ nationality, count: parseInt(count) });
+            }
+        });
+        data.nationalities = nationalities;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/api/surveys/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            showToast('Survey submitted successfully!', 'success');
+            form.reset();
+            
+            // Reset nationality section if it's attraction survey
+            if (surveyType === 'attraction') {
+                hideNationalitySection();
+            }
+            
+            navigate('homePage');
+        } else {
+            const error = await response.json();
+            showToast(error.message || 'Failed to submit survey', 'error');
+        }
+    } catch (error) {
+        console.error('Survey submission error:', error);
+        showToast('Network error. Please try again.', 'error');
+    }
+}
+
     
     document.getElementById('fab').addEventListener('click', () => navigate('submitPage'));
     document.getElementById('modalClose').addEventListener('click', hideModal);
