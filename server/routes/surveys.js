@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
-const { requireAuth } = require('../../middleware/auth');
+const { requireAuth } = require('../middleware/auth');
 
 // Attraction Survey
 router.post('/attraction', requireAuth, async (req, res) => {
