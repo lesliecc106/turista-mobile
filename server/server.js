@@ -32,6 +32,9 @@ app.use(session({
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/migrate', require('./routes/migrate'));
+app.use('/api/users', require('./routes/users'));
+
+app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/surveys', require('./routes/surveys'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/reports', require('./routes/reports'));
@@ -55,3 +58,6 @@ app.listen(PORT, '0.0.0.0', () => {
 
 // Migration endpoint (add before app.listen)
 app.use('/api/migrate', require('./routes/migrate'));
+app.use('/api/users', require('./routes/users'));
+
+app.use('/api/feedback', require('./routes/feedback'));
