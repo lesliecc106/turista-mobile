@@ -199,179 +199,44 @@
                     <h3>Accommodation Survey</h3>
                     <p>Hotels, resorts & lodging</p>
                 </button>
+                <button class="survey-card admin-only" onclick="openSurveyForm('regional')">
+                    <div class="survey-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Regional Entry</h3>
+                    <p>Manual distribution data</p>
+                </button>
             </div>
         </div>
 
-        <div class="page hidden" id="regionalPage">
-            <div class="regional-report-container">
-                <div class="report-header">
-                    <div class="survey-logos">
-                        <div class="dot-logo">Department of Tourism</div>
-                        <div class="phil-logo">It's More Fun in the Philippines</div>
-                    </div>
-                    <h2 class="report-title">REPORT ON THE REGIONAL DISTRIBUTION OF TRAVELERS</h2>
-                    
-                    <!-- Report Controls -->
-                    <div class="report-controls">
-                        <div class="control-group">
-                            <label>City/Municipality:</label>
-                            <input type="text" id="report_city" value="Iriga City" class="control-input">
-                        </div>
-                        <div class="control-group">
-                            <label>Province:</label>
-                            <input type="text" id="report_province" value="Camarines Sur" class="control-input">
-                        </div>
-                        <div class="control-group">
-                            <label>Year:</label>
-                            <select id="report_year" class="control-input">
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="loadRegionalData()">
-                            <i class="fas fa-sync-alt"></i> Load Data
-                        </button>
-                        <button class="btn btn-success" onclick="saveRegionalData()">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Part I: Distribution Table -->
-                <div class="spreadsheet-container">
-                    <h3 class="section-title">PART I: COUNTRY OF RESIDENCE</h3>
-                    <div class="table-responsive">
-                        <table class="regional-table" id="distributionTable">
-                            <thead>
-                                <tr>
-                                    <th class="country-col">Country of Residence</th>
-                                    <th>Jan</th>
-                                    <th>Feb</th>
-                                    <th>Mar</th>
-                                    <th>Apr</th>
-                                    <th>May</th>
-                                    <th>Jun</th>
-                                    <th>Jul</th>
-                                    <th>Aug</th>
-                                    <th>Sep</th>
-                                    <th>Oct</th>
-                                    <th>Nov</th>
-                                    <th>Dec</th>
-                                    <th class="total-col">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="distributionTableBody">
-                                <!-- Data will be populated by JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Part II: Occupancy Table -->
-                <div class="spreadsheet-container">
-                    <h3 class="section-title">PART II: OCCUPANCY RATE AND LENGTH OF STAY</h3>
-                    <div class="table-responsive">
-                        <table class="regional-table" id="occupancyTable">
-                            <thead>
-                                <tr>
-                                    <th class="metric-col">Metric</th>
-                                    <th>Jan</th>
-                                    <th>Feb</th>
-                                    <th>Mar</th>
-                                    <th>Apr</th>
-                                    <th>May</th>
-                                    <th>Jun</th>
-                                    <th>Jul</th>
-                                    <th>Aug</th>
-                                    <th>Sep</th>
-                                    <th>Oct</th>
-                                    <th>Nov</th>
-                                    <th>Dec</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="metric-name">No. of Rooms Occupied</td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="01"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="02"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="03"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="04"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="05"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="06"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="07"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="08"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="09"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="10"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="11"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_occupied" data-month="12"></td>
-                                </tr>
-                                <tr>
-                                    <td class="metric-name">No. of Rooms Available</td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="01"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="02"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="03"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="04"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="05"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="06"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="07"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="08"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="09"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="10"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="11"></td>
-                                    <td><input type="number" class="table-input" data-metric="rooms_available" data-month="12"></td>
-                                </tr>
-                                <tr>
-                                    <td class="metric-name">Total Room Nights</td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="01"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="02"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="03"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="04"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="05"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="06"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="07"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="08"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="09"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="10"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="11"></td>
-                                    <td><input type="number" class="table-input" data-metric="room_nights" data-month="12"></td>
-                                </tr>
-                                <tr class="calculated-row">
-                                    <td class="metric-name">Occupancy Rate (%)</td>
-                                    <td class="calculated-cell" id="occupancy_01">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_02">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_03">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_04">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_05">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_06">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_07">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_08">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_09">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_10">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_11">0.00</td>
-                                    <td class="calculated-cell" id="occupancy_12">0.00</td>
-                                </tr>
-                                <tr>
-                                    <td class="metric-name">Length of Stay (avg nights)</td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="01"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="02"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="03"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="04"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="05"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="06"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="07"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="08"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="09"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="10"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="11"></td>
-                                    <td><input type="number" step="0.1" class="table-input" data-metric="length_of_stay" data-month="12"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+        <div class="page hidden" id="dashboardPage">
+    <h2 class="page-title">Analytics Dashboard</h2>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Visitor Origins</h3>
+            <button class="btn btn-sm" onclick="renderDashboard()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
         </div>
+        <div style="height: 300px; padding: 16px;">
+            <canvas id="topOriginsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Distribution by Country</h3>
+        <div style="height: 300px; padding: 16px;">
+            <canvas id="pieOriginsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Recent Submissions</h3>
+        <div id="dashboardRecent"></div>
+    </div>
+</div>
+        <div class="page hidden" id="regionalPage"></div>
         <div class="page hidden" id="historyPage"></div>
         <div class="page hidden" id="feedbackPage"></div>
         <div class="page hidden" id="reportsPage"></div>
@@ -388,35 +253,6 @@
 
     <form id="attractionSurveyForm" class="survey-form">
         <!-- Q1: Residence -->
-        <!-- Survey Header Information -->
-        <div class="form-section">
-            <label class="form-label">Survey Date</label>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Tourist Attraction</label>
-            <input type="text" class="form-input" name="attractionName" placeholder="Name of attraction" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">City / Municipality</label>
-            <input type="text" class="form-input" name="city" value="Iriga City" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Province</label>
-            <input type="text" class="form-input" name="province" value="Camarines Sur" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Code</label>
-            <input type="text" class="form-input" name="code" placeholder="Optional code">
-        </div>
-        <div class="form-section">
-            <label class="form-label">Enumerator</label>
-            <input type="text" class="form-input" name="enumerator" placeholder="Your name" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Visit Date</label>
-            <input type="date" class="form-input" name="visitDate" required>
-        </div>
-
         <div class="form-section">
             <label class="question-label">Q1 Where is your residence?</label>
             <div class="radio-group">
@@ -429,14 +265,14 @@
                     <span>2. Outside the Municipality</span>
                 </label>
                 <div class="indent-group" id="outsideGroup" style="display:none;">
-                    <input type="text" class="form-input" placeholder="City / Municipality" name="residenceCity" id="residenceCity">
-                    <input type="text" class="form-input" placeholder="Province" name="residenceProvince" id="residenceProvince">
+                    <input type="text" class="form-input" placeholder="City / Municipality" id="residenceCity">
+                    <input type="text" class="form-input" placeholder="Province" id="residenceProvince">
                 </div>
                 <label class="radio-option">
                     <input type="radio" name="residence" value="foreign">
                     <span>3. Foreign Country</span>
                 </label>
-                <input type="text" class="form-input" name="foreignCountry" id="foreignCountry" placeholder="Country" style="display:none;">
+                <input type="text" class="form-input" id="foreignCountry" placeholder="Country" style="display:none;">
             </div>
         </div>
 
@@ -448,7 +284,7 @@
                     <input type="radio" name="overnight" value="yes" required>
                     <span>1. Yes - How many night(s) did you spend in this city/municipality?</span>
                 </label>
-                <input type="number" class="form-input-small" name="nightsCount" id="nightsCount" placeholder="Nights" style="display:none;">
+                <input type="number" class="form-input-small" id="nightsCount" placeholder="Nights" style="display:none;">
                 
                 <div class="sub-question" id="accommodationQuestion" style="display:none;">
                     <p>Q2.1.b Are you going to stay in a commercial accommodation establishment?</p>
@@ -493,51 +329,12 @@
                     <input type="radio" name="purpose" value="other">
                     <span>5. Others. Pls. specify:</span>
                 </label>
-                <input type="text" class="form-input" name="purposeOther" id="purposeOther" placeholder="Please specify" style="display:none;">
+                <input type="text" class="form-input" id="purposeOther" placeholder="Please specify" style="display:none;">
             </div>
         </div>
 
         <!-- Q4: Rating -->
         <div class="form-section">
-
-        <!-- Q3.1: Mode of Transportation -->
-        <div class="form-section">
-            <label class="question-label">Q3.1 What mode of transportation did you use to reach this attraction?</label>
-            <div class="radio-group">
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="private_vehicle" required>
-                    <span>1. Private Vehicle</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="public_transport">
-                    <span>2. Public Transportation</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="rental">
-                    <span>3. Rental Vehicle</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="walk">
-                    <span>4. Walking</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="other">
-                    <span>5. Other</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Q3.2: Group Size -->
-        <div class="form-section">
-            <label class="question-label">Q3.2 How many people are in your travel group (including yourself)?</label>
-            <input type="number" class="form-input" name="groupSize" min="1" placeholder="Number of people" required>
-        </div>
-
-        <!-- Q3.3: Length of Stay -->
-        <div class="form-section">
-            <label class="question-label">Q3.3 How many days do you plan to stay in this city/municipality?</label>
-            <input type="number" class="form-input" name="stay" min="0" step="0.5" placeholder="Number of days" required>
-        </div>
             <label class="question-label">Q4 Please rate this attraction according to the following in a scale of 1 - 4, with 4 being the highest.</label>
             <table class="rating-table">
                 <thead>
@@ -619,14 +416,14 @@
                     <option value="EUR">EUR (€)</option>
                     <option value="other">Other</option>
                 </select>
-                <input type="text" class="form-input" name="currencyOther" id="currencyOther" placeholder="Specify currency" style="display:none;">
-                <input type="number" class="form-input" name="amount" id="amount" placeholder="Amount" required>
+                <input type="text" class="form-input" id="currencyOther" placeholder="Specify currency" style="display:none;">
+                <input type="number" class="form-input" id="amount" placeholder="Amount" required>
             </div>
         </div>
 
         <div class="form-section">
             <label class="question-label">Q6.b Including yourself, how many person(s) are included in the expense you stated?</label>
-            <input type="number" class="form-input-small" name="persons" id="persons" placeholder="Number of persons" required>
+            <input type="number" class="form-input-small" id="persons" placeholder="Number of persons" required>
         </div>
 
         <!-- Q7: Personal Profile -->
@@ -635,7 +432,7 @@
             <div class="profile-group">
                 <div class="profile-item">
                     <label>Age</label>
-                    <input type="number" class="form-input-small" name="age" id="age" placeholder="Age" required>
+                    <input type="number" class="form-input-small" id="age" placeholder="Age" required>
                 </div>
                 <div class="profile-item">
                     <label>Sex</label>
@@ -697,31 +494,32 @@
 
 
 
-            <input type="date" class="form-input" name="surveyDate" id="surveyDate" required>
+            <input type="date" class="form-input" id="surveyDate" required>
         </div>
 
         <div class="form-section">
             <label class="form-label">Tourist Attraction</label>
+            <input type="text" class="form-input" id="attraction" placeholder="Attraction name" required>
         </div>
 
         <div class="form-section">
             <label class="form-label">City / Municipality</label>
-            <input type="text" class="form-input" name="city" id="city" value="Iriga City" required>
+            <input type="text" class="form-input" id="city" value="Iriga City" required>
         </div>
 
         <div class="form-section">
             <label class="form-label">Province</label>
-            <input type="text" class="form-input" name="province" id="province" value="Camarines Sur" required>
+            <input type="text" class="form-input" id="province" value="Camarines Sur" required>
         </div>
 
         <div class="form-section">
             <label class="form-label">Enumerator</label>
-            <input type="text" class="form-input" name="enumerator" id="enumerator" placeholder="Your name" required>
+            <input type="text" class="form-input" id="enumerator" placeholder="Your name" required>
         </div>
 
         <div class="form-section">
             <label class="form-label">Code</label>
-            <input type="text" class="form-input" name="code" id="code" placeholder="Optional code">
+            <input type="text" class="form-input" id="code" placeholder="Optional code">
         </div>
 
         <button type="submit" class="btn btn-primary btn-block">
@@ -745,50 +543,6 @@
         <!-- Q1: Residence -->
         <div class="form-section">
             <label class="question-label">Q1 Where is your residence?</label>
-        <!-- Survey Header Information -->
-        <div class="form-section">
-            <label class="form-label">Establishment Name</label>
-            <input type="text" class="form-input" name="establishmentName" placeholder="Name of hotel/accommodation" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Type of Establishment</label>
-            <select class="form-select" name="aeType" required>
-                <option value="">Select type</option>
-                <option value="hotel">Hotel</option>
-                <option value="resort">Resort</option>
-                <option value="inn">Inn</option>
-                <option value="pension">Pension House</option>
-                <option value="apartment">Apartment Hotel</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Number of Rooms</label>
-            <input type="number" class="form-input" name="numRooms" placeholder="Total rooms" required min="1">
-        </div>
-        <div class="form-section">
-            <label class="form-label">City / Municipality</label>
-            <input type="text" class="form-input" name="city" value="Iriga City" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Province</label>
-            <input type="text" class="form-input" name="province" value="Camarines Sur" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Enumerator</label>
-            <input type="text" class="form-input" name="enumerator" placeholder="Your name" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Survey Date</label>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Check-in Date</label>
-            <input type="date" class="form-input" name="checkinDate" required>
-        </div>
-        <div class="form-section">
-            <label class="form-label">Check-out Date</label>
-            <input type="date" class="form-input" name="checkoutDate" required>
-        </div>
             <div class="radio-group">
                 <label class="radio-option">
                     <input type="radio" name="residence" value="in_city" required>
@@ -799,21 +553,21 @@
                     <span>2. Outside the Municipality</span>
                 </label>
                 <div class="indent-group" id="outsideGroupAccom" style="display:none;">
-                    <input type="text" class="form-input" placeholder="City / Municipality" name="residenceCityAccom" id="residenceCityAccom">
-                    <input type="text" class="form-input" placeholder="Province" name="residenceProvinceAccom" id="residenceProvinceAccom">
+                    <input type="text" class="form-input" placeholder="City / Municipality" id="residenceCityAccom">
+                    <input type="text" class="form-input" placeholder="Province" id="residenceProvinceAccom">
                 </div>
                 <label class="radio-option">
                     <input type="radio" name="residence" value="foreign">
                     <span>3. Foreign Country</span>
                 </label>
-                <input type="text" class="form-input" name="foreignCountryAccom" id="foreignCountryAccom" placeholder="Country" style="display:none;">
+                <input type="text" class="form-input" id="foreignCountryAccom" placeholder="Country" style="display:none;">
             </div>
         </div>
 
         <!-- Q2: Nights Stayed -->
         <div class="form-section">
             <label class="question-label">Q2 How many night(s) did you spend or are you going to stay in this city/municipality?</label>
-            <input type="number" class="form-input-small" name="roomNights" id="nightsStayed" placeholder="Number of nights" required min="1">
+            <input type="number" class="form-input-small" id="nightsStayed" placeholder="Number of nights" required min="1">
         </div>
 
         <!-- Q3: Purpose of Visit -->
@@ -840,7 +594,7 @@
                     <input type="radio" name="purposeAccom" value="other">
                     <span>5. Others. Pls. specify:</span>
                 </label>
-                <input type="text" class="form-input" name="purposeOtherAccom" id="purposeOtherAccom" placeholder="Please specify" style="display:none;">
+                <input type="text" class="form-input" id="purposeOtherAccom" placeholder="Please specify" style="display:none;">
             </div>
         </div>
 
@@ -861,7 +615,7 @@
         <!-- Q5: Group Size -->
         <div class="form-section">
             <label class="question-label">Q5 Including yourself, how many person(s) are traveling with you?</label>
-            <input type="number" class="form-input-small" name="groupSizeAccom" id="groupSizeAccom" placeholder="Number of persons" required min="1">
+            <input type="number" class="form-input-small" id="groupSizeAccom" placeholder="Number of persons" required min="1">
         </div>
 
         <!-- Q6: Traveling With -->
@@ -888,7 +642,7 @@
                     <input type="radio" name="travelingWith" value="other">
                     <span>5. Others. Pls. specify:</span>
                 </label>
-                <input type="text" class="form-input" name="travelingWithOther" id="travelingWithOther" placeholder="Please specify" style="display:none;">
+                <input type="text" class="form-input" id="travelingWithOther" placeholder="Please specify" style="display:none;">
             </div>
         </div>
 
@@ -896,22 +650,22 @@
         <div class="form-section">
             <label class="question-label">Q7.a How much have you spent here in the city / municipality?</label>
             <div class="expense-group">
-                <select class="form-select" name="currencyAccom" id="currencyAccom" required>
+                <select class="form-select" id="currencyAccom" required>
                     <option value="">Currency</option>
                     <option value="PHP">PHP (₱)</option>
                     <option value="USD">USD ($)</option>
                     <option value="EUR">EUR (€)</option>
                     <option value="other">Other</option>
                 </select>
-                <input type="text" class="form-input" name="currencyOtherAccom" id="currencyOtherAccom" placeholder="Specify currency" style="display:none;">
-                <input type="number" class="form-input" name="amountAccom" id="amountAccom" placeholder="Amount" required>
+                <input type="text" class="form-input" id="currencyOtherAccom" placeholder="Specify currency" style="display:none;">
+                <input type="number" class="form-input" id="amountAccom" placeholder="Amount" required>
             </div>
         </div>
 
         <!-- Q7.b: Persons Included in Expense -->
         <div class="form-section">
             <label class="question-label">Q7.b Including yourself, how many person(s) are included in the expense you stated?</label>
-            <input type="number" class="form-input-small" name="personsExpenseAccom" id="personsExpenseAccom" placeholder="Number of persons" required min="1">
+            <input type="number" class="form-input-small" id="personsExpenseAccom" placeholder="Number of persons" required min="1">
         </div>
 
         <!-- Q8: Personal Profile -->
@@ -920,7 +674,7 @@
             <div class="profile-group">
                 <div class="profile-item">
                     <label>a. Age</label>
-                    <input type="number" class="form-input-small" name="ageAccom" id="ageAccom" placeholder="Age" required>
+                    <input type="number" class="form-input-small" id="ageAccom" placeholder="Age" required>
                 </div>
                 <div class="profile-item">
                     <label>b. Sex</label>
@@ -935,64 +689,6 @@
                         </label>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Q8.5: Mode of Transportation -->
-        <div class="form-section">
-            <label class="question-label">Q8.5 What mode of transportation did you use to reach this establishment?</label>
-            <div class="radio-group">
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="private_vehicle" required>
-                    <span>1. Private Vehicle</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="public_transport">
-                    <span>2. Public Transportation</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="rental">
-                    <span>3. Rental Vehicle</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="walk">
-                    <span>4. Walking</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="transport" value="other">
-                    <span>5. Other</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Q8.6: Information Source -->
-        <div class="form-section">
-            <label class="question-label">Q8.6 How did you learn about this establishment?</label>
-            <div class="radio-group">
-                <label class="radio-option">
-                    <input type="radio" name="source" value="internet" required>
-                    <span>1. Internet/Website</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="source" value="social_media">
-                    <span>2. Social Media</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="source" value="travel_agent">
-                    <span>3. Travel Agent</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="source" value="word_of_mouth">
-                    <span>4. Word of Mouth</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="source" value="previous_visit">
-                    <span>5. Previous Visit</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="source" value="other">
-                    <span>6. Other</span>
-                </label>
             </div>
         </div>
 
@@ -1041,23 +737,23 @@
         <!-- Survey Details -->
         <div class="form-section">
             <label class="form-label">Date Accomplished (MM/DD/YYYY)</label>
-            <input type="date" class="form-input" id="dateAccomplished" name="surveyDate" required>
+            <input type="date" class="form-input" id="dateAccomplished" required>
         </div>
 
         <div class="form-section">
             <label class="form-label">Accommodation Establishment</label>
-            <input type="text" class="form-input" id="accommodationName" name="establishmentName" placeholder="Establishment name" required>
+            <input type="text" class="form-input" id="accommodationName" placeholder="Establishment name" required>
         </div>
 
         <div class="form-section">
             <div class="profile-group">
                 <div class="profile-item">
                     <label class="form-label">AE Type</label>
-                    <input type="text" class="form-input" id="aeType" name="aeType" placeholder="e.g., Hotel, Resort" required>
+                    <input type="text" class="form-input" id="aeType" placeholder="e.g., Hotel, Resort" required>
                 </div>
                 <div class="profile-item">
                     <label class="form-label">No. of Rooms</label>
-                    <input type="number" class="form-input" id="numberOfRooms" name="numRooms" placeholder="Number of rooms" required>
+                    <input type="number" class="form-input" id="numberOfRooms" placeholder="Number of rooms" required>
                 </div>
             </div>
         </div>
@@ -1066,18 +762,18 @@
             <div class="profile-group">
                 <div class="profile-item">
                     <label class="form-label">City / Municipality</label>
-                    <input type="text" class="form-input" id="cityAccom" name="city" value="Iriga City" required>
+                    <input type="text" class="form-input" id="cityAccom" value="Iriga City" required>
                 </div>
                 <div class="profile-item">
                     <label class="form-label">Province</label>
-                    <input type="text" class="form-input" id="provinceAccom" name="province" value="Camarines Sur" required>
+                    <input type="text" class="form-input" id="provinceAccom" value="Camarines Sur" required>
                 </div>
             </div>
         </div>
 
         <div class="form-section">
             <label class="form-label">Enumerator</label>
-            <input type="text" class="form-input" id="enumeratorAccom" name="enumerator" placeholder="Your name" required>
+            <input type="text" class="form-input" id="enumeratorAccom" placeholder="Your name" required>
         </div>
 
         <button type="submit" class="btn btn-primary btn-block">
@@ -1138,8 +834,4 @@
 <script src="/js/attraction_survey.js"></script>
 <script src="/js/conditional_logic.js"></script>
 <script src="/js/accommodation_survey.js"></script>
-    <script src="/js/history.js"></script>
-    <script src="/js/regional-data.js"></script>
-    <script src="/js/dashboard-analytics.js"></script>
-    <script src="/js/reports.js"></script>
 </body>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0e6ba8">
+    <title>Touris-Ta | Tourism Office Mobile</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- SheetJS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="/css/mobile.css">
+    <link rel="stylesheet" href="/css/attraction_survey.css">
+</head>
+<body>
+    <!-- NOTE: This is a STARTER template. -->
+    <!-- For the COMPLETE HTML with all features, copy Section 9 from your document. -->
+    <div id="splash" class="splash">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <img src="assets/splash.png" alt="TOURIS-TA Logo">
+            </div>
+            <div class="splash-loader"></div>
+        </div>
+    </div>
+
+    <header class="app-header" id="appHeader">
+        <button class="header-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-title">
+            <h1 id="headerTitle">Touris-Ta</h1>
+            <p id="headerSubtitle">Tourism Office</p>
+        </div>
+        <button class="header-btn" id="notifBtn">
+            <i class="fas fa-bell"></i>
+            <span class="badge-dot" id="notifDot"></span>
+        </button>
+    </header>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <div class="menu-logo">
+                <img src="assets/tourista-logo.png" alt="TOURIS-TA Logo" style="width: 80%; height: 80%; object-fit: contain;">
+            </div>
+            <div class="menu-info">
+                <h3 id="menuUserName">Guest</h3>
+                <p id="menuUserRole">Not signed in</p>
+            </div>
+        </div>
+        <nav class="menu-nav" id="menuNav"></nav>
+        <div class="menu-footer">
+            <button class="menu-item" id="menuThemeBtn">
+                <i class="fas fa-moon"></i>
+                <span>Dark Mode</span>
+                <div class="toggle-switch" id="themeToggle">
+                    <div class="toggle-slider"></div>
+                </div>
+            </button>
+        </div>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <main class="app-content" id="appContent">
+        <div class="page" id="authPage">
+            <div class="auth-container">
+                <div class="auth-logo">
+                    <img src="assets/tourista-logo.png" alt="TOURIS-TA Logo" style="width: 80%; height: 80%; object-fit: contain;">
+                </div>
+                <h2 class="auth-title">Welcome to Touris-Ta</h2>
+                <p class="auth-subtitle">Iriga City Tourism Reporting System</p>
+                
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="login">Login</button>
+                    <button class="tab-btn" data-tab="signup">Sign Up</button>
+                </div>
+
+                <form class="auth-form" id="loginForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="loginUsername" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+
+                <form class="auth-form hidden" id="signupForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="signupUsername" placeholder="Choose username" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create password" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-id-card"></i> Full Name</label>
+                        <input type="text" id="signupName" placeholder="Your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email (optional)</label>
+                        <input type="email" id="signupEmail" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tag"></i> Role</label>
+                        <select id="signupRole">
+                            <option value="tourist">Tourist / Visitor</option>
+                            <option value="establishment">Establishment Owner</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                    <p class="auth-note">
+                        <i class="fas fa-info-circle"></i> Account requires admin approval
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <div class="page hidden" id="homePage">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="stat-info">
+                        <p class="stat-label">Establishments</p>
+                        <h3 class="stat-value" id="statEstablishments">0</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="stat-info">
+                        <p class="stat-label">Surveys</p>
+                        <h3 class="stat-value" id="statSurveys">0</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="stat-info">
+                        <p class="stat-label">Visitors</p>
+                        <h3 class="stat-value" id="statVisitors">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Quick Actions</h3>
+                <div class="action-grid">
+                    <button class="action-btn" onclick="navigate('submitPage')">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>New Survey</span>
+                    </button>
+                    <button class="action-btn" onclick="navigate('historyPage')">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </button>
+                    <button class="action-btn admin-only" onclick="navigate('reportsPage')">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </button>
+                    <button class="action-btn" onclick="navigate('feedbackPage')">
+                        <i class="fas fa-comment"></i>
+                        <span>Feedback</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page hidden" id="submitPage">
+            <div class="survey-selector">
+                <button class="survey-card" onclick="openSurveyForm('attraction')">
+                    <div class="survey-icon">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <h3>Attraction Survey</h3>
+                    <p>Tourism attractions & sites</p>
+                </button>
+                <button class="survey-card" onclick="openSurveyForm('accommodation')">
+                    <div class="survey-icon">
+                        <i class="fas fa-hotel"></i>
+                    </div>
+                    <h3>Accommodation Survey</h3>
+                    <p>Hotels, resorts & lodging</p>
+                </button>
+                <button class="survey-card admin-only" onclick="openSurveyForm('regional')">
+                    <div class="survey-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Regional Entry</h3>
+                    <p>Manual distribution data</p>
+                </button>
+            </div>
+        </div>
+
+        <div class="page hidden" id="dashboardPage">
+    <h2 class="page-title">Analytics Dashboard</h2>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Visitor Origins</h3>
+            <button class="btn btn-sm" onclick="renderDashboard()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+        <div style="height: 300px; padding: 16px;">
+            <canvas id="topOriginsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Distribution by Country</h3>
+        <div style="height: 300px; padding: 16px;">
+            <canvas id="pieOriginsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Recent Submissions</h3>
+        <div id="dashboardRecent"></div>
+    </div>
+</div>
+        <div class="page hidden" id="regionalPage"></div>
+        <div class="page hidden" id="historyPage"></div>
+        <div class="page hidden" id="feedbackPage"></div>
+        <div class="page hidden" id="reportsPage"></div>
+        <div class="page hidden" id="dataPage"></div>
+        <div class="page hidden" id="attractionSurveyPage">
+<div class="survey-form-container">
+        </div>
+    <div class="survey-header">
+        <div class="survey-logos">
+            <div class="dot-logo">Department of Tourism</div>
+            <div class="phil-logo">It's More Fun in the Philippines</div>
+        </div>
+        <h2 class="survey-title">TOURISM ATTRACTION VISITOR SURVEY</h2>
+        <p class="survey-instruction">Please answer by encircling the number of your choice and filling in the blanks.</p>
+    </div>
+
+    <form id="attractionSurveyForm" class="survey-form">
+        <!-- Q1: Residence -->
+        <div class="form-section">
+            <label class="question-label">Q1 Where is your residence?</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="residence" value="in_city" required>
+                    <span>1. In this City / Municipality</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="residence" value="outside">
+                    <span>2. Outside the Municipality</span>
+                </label>
+                <div class="indent-group" id="outsideGroup" style="display:none;">
+                    <input type="text" class="form-input" placeholder="City / Municipality" id="residenceCity">
+                    <input type="text" class="form-input" placeholder="Province" id="residenceProvince">
+                </div>
+                <label class="radio-option">
+                    <input type="radio" name="residence" value="foreign">
+                    <span>3. Foreign Country</span>
+                </label>
+                <input type="text" class="form-input" id="foreignCountry" placeholder="Country" style="display:none;">
+            </div>
+        </div>
+
+        <!-- Q2: Overnight Stay -->
+        <div class="form-section">
+            <label class="question-label">Q2 Are you going to stay overnight in this city / municipality?</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="overnight" value="yes" required>
+                    <span>1. Yes - How many night(s) did you spend in this city/municipality?</span>
+                </label>
+                <input type="number" class="form-input-small" id="nightsCount" placeholder="Nights" style="display:none;">
+                
+                <div class="sub-question" id="accommodationQuestion" style="display:none;">
+                    <p>Q2.1.b Are you going to stay in a commercial accommodation establishment?</p>
+                    <label class="radio-option-inline">
+                        <input type="radio" name="accommodation" value="yes">
+                        <span>Yes</span>
+                    </label>
+                    <label class="radio-option-inline">
+                        <input type="radio" name="accommodation" value="no">
+                        <span>No</span>
+                    </label>
+                </div>
+
+                <label class="radio-option">
+                    <input type="radio" name="overnight" value="no">
+                    <span>2. No</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q3: Purpose of Visit -->
+        <div class="form-section">
+            <label class="question-label">Q3 What is your main purpose for visiting this attraction?</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="pleasure" required>
+                    <span>1. Pleasure / Recreation</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="business">
+                    <span>2. Business</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="education">
+                    <span>3. Educational / Fieldtrip</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="health">
+                    <span>4. Health and wellness</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="purpose" value="other">
+                    <span>5. Others. Pls. specify:</span>
+                </label>
+                <input type="text" class="form-input" id="purposeOther" placeholder="Please specify" style="display:none;">
+            </div>
+        </div>
+
+        <!-- Q4: Rating -->
+        <div class="form-section">
+            <label class="question-label">Q4 Please rate this attraction according to the following in a scale of 1 - 4, with 4 being the highest.</label>
+            <table class="rating-table">
+                <thead>
+                    <tr>
+                        <th>Attributes</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. Security</td>
+                        <td><input type="radio" name="rating_security" value="1" required></td>
+                        <td><input type="radio" name="rating_security" value="2"></td>
+                        <td><input type="radio" name="rating_security" value="3"></td>
+                        <td><input type="radio" name="rating_security" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td>2. Cleanliness</td>
+                        <td><input type="radio" name="rating_cleanliness" value="1" required></td>
+                        <td><input type="radio" name="rating_cleanliness" value="2"></td>
+                        <td><input type="radio" name="rating_cleanliness" value="3"></td>
+                        <td><input type="radio" name="rating_cleanliness" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td>3. Presence of activities</td>
+                        <td><input type="radio" name="rating_activities" value="1" required></td>
+                        <td><input type="radio" name="rating_activities" value="2"></td>
+                        <td><input type="radio" name="rating_activities" value="3"></td>
+                        <td><input type="radio" name="rating_activities" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td>4. Staff friendliness and overall work attitude</td>
+                        <td><input type="radio" name="rating_staff" value="1" required></td>
+                        <td><input type="radio" name="rating_staff" value="2"></td>
+                        <td><input type="radio" name="rating_staff" value="3"></td>
+                        <td><input type="radio" name="rating_staff" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td>5. Value for money</td>
+                        <td><input type="radio" name="rating_value" value="1" required></td>
+                        <td><input type="radio" name="rating_value" value="2"></td>
+                        <td><input type="radio" name="rating_value" value="3"></td>
+                        <td><input type="radio" name="rating_value" value="4"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Q5: Visit Frequency -->
+        <div class="form-section">
+            <label class="question-label">Q5 How many times have you visited this attraction?</label>
+            <div class="radio-group-inline">
+                <label class="radio-option-inline">
+                    <input type="radio" name="visits" value="1" required>
+                    <span>1x</span>
+                </label>
+                <label class="radio-option-inline">
+                    <input type="radio" name="visits" value="2">
+                    <span>2x</span>
+                </label>
+                <label class="radio-option-inline">
+                    <input type="radio" name="visits" value="3+">
+                    <span>3x+</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q6: Expenses -->
+        <div class="form-section">
+            <label class="question-label">Q6.a How much have you spent here in this attraction?</label>
+            <div class="expense-group">
+                <select class="form-select" id="currency" required>
+                    <option value="">Currency</option>
+                    <option value="PHP">PHP (₱)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="other">Other</option>
+                </select>
+                <input type="text" class="form-input" id="currencyOther" placeholder="Specify currency" style="display:none;">
+                <input type="number" class="form-input" id="amount" placeholder="Amount" required>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <label class="question-label">Q6.b Including yourself, how many person(s) are included in the expense you stated?</label>
+            <input type="number" class="form-input-small" id="persons" placeholder="Number of persons" required>
+        </div>
+
+        <!-- Q7: Personal Profile -->
+        <div class="form-section">
+            <label class="question-label">Q7 Personal Profile</label>
+            <div class="profile-group">
+                <div class="profile-item">
+                    <label>Age</label>
+                    <input type="number" class="form-input-small" id="age" placeholder="Age" required>
+                </div>
+                <div class="profile-item">
+                    <label>Sex</label>
+                    <div class="radio-group-inline">
+                        <label class="radio-option-inline">
+                            <input type="radio" name="sex" value="M" required>
+                            <span>M</span>
+                        </label>
+                        <label class="radio-option-inline">
+                            <input type="radio" name="sex" value="F">
+                            <span>F</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="thank-you-text">Thank you very much for the time and information you gave for the survey!<br>Enjoy the rest of your stay!</p>
+
+        <!-- Survey Details -->
+<!-- Question: Multiple Nationalities -->
+<div class="form-section">
+    <label class="question-label">
+        <i class="fas fa-globe"></i> Does your group include people from different countries?
+    </label>
+    <div class="radio-group">
+        <label class="radio-option">
+            <input type="radio" name="multipleNationalities" value="yes" onchange="handleMultipleNationalitiesChange('yes')">
+            <span class="radio-label">Yes</span>
+        </label>
+        <label class="radio-option">
+            <input type="radio" name="multipleNationalities" value="no" onchange="handleMultipleNationalitiesChange('no')">
+            <span class="radio-label">No</span>
+        </label>
+    </div>
+</div>
+
+<!-- Multiple Nationalities Feature -->
+<div class="form-section" id="nationalitySection" style="display:none;">
+    <label class="question-label">
+        <i class="fas fa-users"></i> Group Composition by Nationality  
+    </label>
+    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">
+        If your group has people from different countries, add them below:
+    </p>
+    <div id="nationalityList">
+        <!-- Nationality rows will be added here -->
+    </div>
+    <button type="button" class="btn-add-nationality" onclick="addNationalityRow()">
+        <i class="fas fa-plus-circle"></i> Add Nationality
+    </button>
+    <div class="nationality-summary" id="nationalitySummary" style="display:none;">
+        <h4>Summary:</h4>
+        <div id="summaryContent"></div>
+    </div>
+</div>
+        <div class="form-section">
+            <label class="form-label">Date of Survey (Month/Day/Year)</label>
+            <input type="date" class="form-input" id="surveyDate" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">Tourist Attraction</label>
+            <input type="text" class="form-input" id="attraction" placeholder="Attraction name" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">City / Municipality</label>
+            <input type="text" class="form-input" id="city" value="Iriga City" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">Province</label>
+            <input type="text" class="form-input" id="province" value="Camarines Sur" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">Enumerator</label>
+            <input type="text" class="form-input" id="enumerator" placeholder="Your name" required>
+        </div>
+
+        <div class="form-section">
+            <label class="form-label">Code</label>
+            <input type="text" class="form-input" id="code" placeholder="Optional code">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-paper-plane"></i> Submit Survey
+        </button>
+    </form>
+</div>
+    <div class="survey-header">
+    </main>
+
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-btn active" data-page="homePage">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-btn" data-page="submitPage">
+            <i class="fas fa-plus-circle"></i>
+            <span>Submit</span>
+        </button>
+        <button class="nav-btn admin-only" data-page="dashboardPage">
+            <i class="fas fa-chart-line"></i>
+            <span>Dashboard</span>
+        </button>
+        <button class="nav-btn" data-page="historyPage">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </button>
+    </nav>
+
+    <button class="fab" id="fab" title="Add Survey">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modalCancel">Cancel</button>
+                <button class="btn btn-primary" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+<!-- Dashboard Module -->
+<script src="/js/dashboard.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/attraction_survey.js"></script>
+<script src="/js/conditional_logic.js"></script>
+</body>

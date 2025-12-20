@@ -1,0 +1,23 @@
+        
+        <!-- Multiple Nationalities Feature -->
+        <div class="form-section" id="nationalitySection" style="display:none;">
+            <label class="question-label">
+                <i class="fas fa-users"></i> Group Composition by Nationality
+            </label>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">
+                If your group has people from different countries, add them below:
+            </p>
+            
+            <div id="nationalityList">
+                <!-- Nationality rows will be added here -->
+            </div>
+            
+            <button type="button" class="btn-add-nationality" onclick="addNationalityRow()">
+                <i class="fas fa-plus-circle"></i> Add Nationality
+            </button>
+            
+            <div class="nationality-summary" id="nationalitySummary" style="display:none;">
+                <h4>Summary:</h4>
+                <div id="summaryContent"></div>
+            </div>
+        </div>
