@@ -231,43 +231,6 @@ router.post('/regional-data/save', requireAuth, async (req, res) => {
 
 
 // Get regional distribution data for a specific year
-router.get('/regional-data', requireAuth, async (req, res) => {
-    try {
-        const { year } = req.query;
-        
-        if (!year) {
-            return res.status(400).json({ error: 'Year parameter is required' });
-        }
-
-        const result = await pool.query(
-            `SELECT 
-                origin as country,
-                EXTRACT(MONTH FROM created_at) as month,
-                SUM(count) as count
-             FROM regional_distribution
-             WHERE owner = $1 
-               AND EXTRACT(YEAR FROM created_at) = $2
-             GROUP BY origin, month
-             ORDER BY country, month`,
-            [req.session.user.username, year]
-        );
-
-        // Organize data by country and month
-        const distribution = {};
-        result.rows.forEach(row => {
-            if (!distribution[row.country]) {
-                distribution[row.country] = {};
-            }
-            distribution[row.country][row.month] = parseInt(row.count);
-        });
-
-        res.json({ 
-            success: true,
-            distribution: distribution,
-            year: year
-        });
-    } catch (error) {
-        console.error('Load regional data error:', error);
         res.status(500).json({ error: 'Failed to load regional data' });
     }
 });
