@@ -1020,10 +1020,10 @@ async function submitFeedback(e) {
     }
     
     try {
-        const response = await fetch(`${API_BASE}/api/admin/feedback`, {
+        const response = await fetch(`${API_BASE}/api/feedback`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, message })
+            body: JSON.stringify({ username: currentUser?.username || "anonymous", subject: "User Feedback", body: message })
         });
         
         if (response.ok) {
@@ -1744,13 +1744,13 @@ async function loadPendingApprovals() {
                 <div class="approval-info">
                     <p><strong>Username:</strong> ${user.username}</p>
                     <p><strong>Role:</strong> ${user.role}</p>
-                    <p><strong>Registered:</strong> ${new Date(user.createdAt).toLocaleDateString()}</p>
+                    <p><strong>Registered:</strong> ${new Date(user.created_at).toLocaleDateString()}</p>
                 </div>
                 <div class="approval-actions">
-                    <button class="btn-success" onclick="approveUser('${user._id}')">
+                    <button class="btn-success" onclick="approveUser('${user.id}')">
                         <i class="fas fa-check"></i> Approve
                     </button>
-                    <button class="btn-danger" onclick="rejectUser('${user._id}')">
+                    <button class="btn-danger" onclick="rejectUser('${user.id}')">
                         <i class="fas fa-times"></i> Reject
                     </button>
                 </div>
