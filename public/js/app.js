@@ -526,15 +526,134 @@ function buildMenu() {
 // ==================== STATS ====================
 async function loadStats() {
     try {
-        const response = await fetch(`${API_BASE}/api/analytics/dashboard/stats`);
-        const data = await response.json();
-        
-        document.getElementById("statAttractions").textContent = data.attractionSurveys || 0;
-        document.getElementById("statAccommodations").textContent = data.accommodationSurveys || 0;
-        document.getElementById('statSurveys').textContent = data.totalSurveys || 0;
-        document.getElementById('statVisitors').textContent = data.totalVisitors || 0;
+        // Load dashboard statistics
+        const statsResponse = await fetch(`${API_BASE}/api/dashboard/dashboard-stats`, {
+            credentials: 'include'
+        });
+        const statsData = await statsResponse.json();
+
+        // Update stat cards in dashboard
+        const statCards = document.querySelectorAll('.stat-number');
+        if (statCards.length >= 4) {
+            statCards[0].textContent = statsData.totalSurveys || 0;
+            statCards[1].textContent = statsData.accommodationSurveys || 0;
+            statCards[2].textContent = statsData.daytripSurveys || 0;
+            statCards[3].textContent = statsData.totalVisitors || 0;
+        }
+
+        // Load chart data
+        const chartResponse = await fetch(`${API_BASE}/api/analytics/chart-data`, {
+            credentials: 'include'
+        });
+        const chartData = await chartResponse.json();
+
+        // Initialize Monthly Chart
+        const monthlyCtx = document.getElementById('monthlyChart');
+        if (monthlyCtx && window.Chart) {
+            // Destroy existing chart if it exists
+            if (window.monthlyChartInstance) {
+                window.monthlyChartInstance.destroy();
+            }
+            
+            window.monthlyChartInstance = new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.monthlyData?.labels || [],
+                    datasets: [{
+                        label: 'Surveys',
+                        data: chartData.monthlyData?.values || [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Survey Type Pie Chart
+        const pieCtx = document.getElementById('surveyTypePie');
+        if (pieCtx && window.Chart) {
+            // Destroy existing chart if it exists
+            if (window.surveyTypePieInstance) {
+                window.surveyTypePieInstance.destroy();
+            }
+            
+            window.surveyTypePieInstance = new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Accommodation', 'Day Trip'],
+                    datasets: [{
+                        data: [
+                            chartData.surveyTypes?.accommodation || 0,
+                            chartData.surveyTypes?.daytrip || 0
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Nationality Bar Chart
+        const nationalityCtx = document.getElementById('nationalityPie');
+        if (nationalityCtx && window.Chart) {
+            // Destroy existing chart if it exists
+            if (window.nationalityChartInstance) {
+                window.nationalityChartInstance.destroy();
+            }
+            
+            window.nationalityChartInstance = new Chart(nationalityCtx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.nationalities?.labels || [],
+                    datasets: [{
+                        label: 'Visitors',
+                        data: chartData.nationalities?.values || [],
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
     } catch (error) {
         console.error('Load stats error:', error);
+        showToast('Failed to load dashboard data', 'error');
     }
 }
 
@@ -812,7 +931,7 @@ async function loadHistory(type) {
         if (!response.ok) throw new Error('Failed to load history');
         
         const data = await response.json();
-        renderHistoryContent(type, data);
+        renderHistoryContent(type, data.surveys || []);
     } catch (error) {
         console.error('Load history error:', error);
         showToast('Failed to load history', 'error');
@@ -821,7 +940,7 @@ async function loadHistory(type) {
 
 function renderHistoryContent(type, data) {
     const container = document.getElementById('historyContent');
-    
+
     if (!data || data.length === 0) {
         container.innerHTML = `
             <div class="card" style="text-align: center;">
@@ -831,34 +950,36 @@ function renderHistoryContent(type, data) {
         `;
         return;
     }
-    
-    if (type === 'attractions') {
-        container.innerHTML = data.map(item => `
-            <div class="card">
-                <h4 style="margin: 0 0 8px;">${escapeHtml(item.attraction_name)}</h4>
-                <p style="color: var(--text-secondary); font-size: 14px; margin: 0 0 8px;">
-                    <i class="fas fa-map-marker-alt"></i> ${escapeHtml(item.city)}
-                </p>
-                <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">
-                    <i class="fas fa-calendar"></i> ${formatDate(item.survey_date)} | 
-                    <i class="fas fa-user"></i> ${escapeHtml(item.owner)}
-                </p>
+
+    // Filter data by type
+    const filteredData = data.filter(item => {
+        if (type === 'attractions') return item.type === 'Attraction';
+        if (type === 'accommodations') return item.type === 'Accommodation';
+        return false;
+    });
+
+    if (filteredData.length === 0) {
+        container.innerHTML = `
+            <div class="card" style="text-align: center;">
+                <i class="fas fa-inbox" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                <p style="color: var(--text-secondary);">No ${type} records found</p>
             </div>
-        `).join('');
-    } else if (type === 'accommodations') {
-        container.innerHTML = data.map(item => `
-            <div class="card">
-                <h4 style="margin: 0 0 8px;">${escapeHtml(item.establishment_name)}</h4>
-                <p style="color: var(--text-secondary); font-size: 14px; margin: 0 0 8px;">
-                    <i class="fas fa-building"></i> ${escapeHtml(item.ae_type)}
-                </p>
-                <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">
-                    <i class="fas fa-calendar"></i> ${formatDate(item.survey_date)} | 
-                    <i class="fas fa-user"></i> ${escapeHtml(item.owner)}
-                </p>
-            </div>
-        `).join('');
+        `;
+        return;
     }
+
+    container.innerHTML = filteredData.map(item => `
+        <div class="card">
+            <h4 style="margin: 0 0 8px;">${escapeHtml(item.name || 'N/A')}</h4>
+            <p style="color: var(--text-secondary); font-size: 14px; margin: 0 0 8px;">
+                <i class="fas fa-tag"></i> ${escapeHtml(item.type)}
+            </p>
+            <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">
+                <i class="fas fa-calendar"></i> ${formatDate(item.survey_date)} |
+                <i class="fas fa-user"></i> ${escapeHtml(item.enumerator || 'N/A')}
+            </p>
+        </div>
+    `).join('');
 }
 
 // ==================== FEEDBACK PAGE ====================
