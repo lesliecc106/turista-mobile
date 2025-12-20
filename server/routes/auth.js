@@ -61,13 +61,12 @@ router.post('/register', async (req, res) => {
         
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await pool.query(
-            'INSERT INTO users (username, password, name, email, role, status) VALUES ($1, $2, $3, $4, $5, 'pending') RETURNING id',
+            `INSERT INTO users (username, password, name, email, role, status) VALUES ($1, $2, $3, $4, $5, 'pending') RETURNING id`,
             [username, hashedPassword, name, email, role]
         );
-        
         await pool.query(
-            'INSERT INTO notifications (username, subject, body) VALUES ('admin01', 'New signup pending', $1)',
-            [`New account ${username} created and awaiting approval.`]
+            `INSERT INTO notifications (username, subject, body) VALUES ('admin01', 'New signup pending', $1)`,
+            [\`New account ${username} created and awaiting approval.\`]
         );
         
         res.json({ success: true, message: 'Account created successfully' });
