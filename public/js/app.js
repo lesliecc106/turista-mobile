@@ -402,9 +402,6 @@ function loadPageData(pageId) {
             loadReportsPage();
             break;
     }
-            loadReportsPage();
-            break;
-    }
 }
 
 // ==================== MENU ====================
