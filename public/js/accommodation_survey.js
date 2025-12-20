@@ -305,7 +305,7 @@ async function handleAccommodationFormSubmit(e) {
         nationalityRows: surveyData.nationalityRows
     };
     
-    console.log('Accommodation Survey Data:', apiData);
+    console.log("Accommodation Survey Data:", JSON.stringify(apiData, null, 2));
     
     try {
         const response = await fetch('/api/surveys/accommodation', {
