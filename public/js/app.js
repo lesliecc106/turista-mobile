@@ -211,8 +211,72 @@ async function submitSurveyForm(surveyType, form) {
     document.getElementById('fab').addEventListener('click', () => navigate('submitPage'));
     document.getElementById('modalClose').addEventListener('click', hideModal);
     document.getElementById('modalCancel').addEventListener('click', hideModal);
+    setupRadioHandlers();
 }
 
+
+// Setup radio button handlers for "Other" options
+function setupRadioHandlers() {
+    // Purpose "Other" handlers - Attraction form
+    const purposeRadios = document.querySelectorAll('input[name="purpose"]');
+    purposeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherInput = document.getElementById('purposeOther');
+            if (otherInput) {
+                otherInput.style.display = this.value === 'other' ? 'block' : 'none';
+                if (this.value !== 'other') otherInput.value = '';
+            }
+        });
+    });
+
+    // Transport "Other" handlers - Attraction form
+    const transportRadios = document.querySelectorAll('#attractionSurveyForm input[name="transport"]');
+    transportRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherInput = document.getElementById('transportOther');
+            if (otherInput) {
+                otherInput.style.display = this.value === 'other' ? 'block' : 'none';
+                if (this.value !== 'other') otherInput.value = '';
+            }
+        });
+    });
+
+    // Purpose "Other" handlers - Accommodation form
+    const purposeAccomRadios = document.querySelectorAll('input[name="purposeAccom"]');
+    purposeAccomRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherInput = document.getElementById('purposeOtherAccom');
+            if (otherInput) {
+                otherInput.style.display = this.value === 'other' ? 'block' : 'none';
+                if (this.value !== 'other') otherInput.value = '';
+            }
+        });
+    });
+
+    // Transport "Other" handlers - Accommodation form
+    const transportAccomRadios = document.querySelectorAll('#accommodationSurveyForm input[name="transport"]');
+    transportAccomRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherInput = document.getElementById('transportOtherAccom');
+            if (otherInput) {
+                otherInput.style.display = this.value === 'other' ? 'block' : 'none';
+                if (this.value !== 'other') otherInput.value = '';
+            }
+        });
+    });
+
+    // Traveling With "Other" handlers - Accommodation form
+    const travelingRadios = document.querySelectorAll('input[name="travelingWith"]');
+    travelingRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherInput = document.getElementById('travelingWithOther');
+            if (otherInput) {
+                otherInput.style.display = this.value === 'other' ? 'block' : 'none';
+                if (this.value !== 'other') otherInput.value = '';
+            }
+        });
+    });
+}
 // ==================== SESSION MANAGEMENT ====================
 async function checkSession() {
     try {
@@ -972,14 +1036,12 @@ const nationalityData = [];
 function addNationalityRow() {
     nationalityCount++;
     const nationalityList = document.getElementById('nationalityList');
-    
     const row = document.createElement('div');
     row.className = 'nationality-row';
     row.id = `nationality-row-${nationalityCount}`;
-    
     row.innerHTML = `
         <div class="nationality-input-group">
-            <select class="nationality-select" id="nationality-${nationalityCount}" onchange="updateNationalitySummary()">
+            <select class="nationality-select" id="nationality-${nationalityCount}" onchange="toggleOtherNationality(${nationalityCount}); updateNationalitySummary()">
                 <option value="">Select Country</option>
                 <option value="Philippines">Philippines</option>
                 <option value="United States">United States</option>
@@ -1001,25 +1063,39 @@ function addNationalityRow() {
                 <option value="Hong Kong">Hong Kong</option>
                 <option value="Other">Other</option>
             </select>
-            
-            <input type="number" 
+            <input type="text"
+                   class="form-input nationality-other-input"
+                   id="nationality-other-${nationalityCount}"
+                   placeholder="Specify nationality"
+                   style="display:none;">
+            <input type="number"
                    class="nationality-count" 
-                   id="count-${nationalityCount}" 
+                   id="count-${nationalityCount}"
                    placeholder="Number of people"
                    min="1"
                    onchange="updateNationalitySummary()">
-            
             <button type="button" 
-                    class="btn-remove-nationality" 
+                    class="btn-remove-nationality"
                     onclick="removeNationalityRow(${nationalityCount})"
                     title="Remove">
                 <i class="fas fa-times"></i>
             </button>
         </div>
     `;
-    
     nationalityList.appendChild(row);
     updateNationalitySummary();
+}
+
+function toggleOtherNationality(id) {
+    const select = document.getElementById(`nationality-${id}`);
+    const otherInput = document.getElementById(`nationality-other-${id}`);
+    
+    if (select && otherInput) {
+        otherInput.style.display = select.value === 'Other' ? 'block' : 'none';
+        if (select.value !== 'Other') {
+            otherInput.value = '';
+        }
+    }
 }
 
 function removeNationalityRow(id) {
