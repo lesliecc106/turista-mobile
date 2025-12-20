@@ -21,8 +21,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'turista-secret-key-2024',
     resave: false,
     saveUninitialized: false,
-    cookie: { 
-        secure: false, // set to true if using HTTPS
+    cookie: {
+        secure: false,
+        httpOnly: true,
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
