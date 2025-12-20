@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const pool = require('../config/database');
+const pool = require('../db');
 
 // Login
 router.post('/login', async (req, res) => {
