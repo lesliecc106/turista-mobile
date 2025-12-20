@@ -826,6 +826,7 @@
 
         <div class="form-section">
             <label class="form-label">Tourist Attraction</label>
+            <input type="text" class="form-input" name="attractionName" id="attractionName" placeholder="Name of attraction" required>
         </div>
 
         <div class="form-section">
@@ -837,8 +838,12 @@
             <label class="form-label">Province</label>
             <input type="text" class="form-input" name="province" id="province" value="Camarines Sur" required>
         </div>
-
         <div class="form-section">
+            <label class="form-label">Visit Date</label>
+            <input type="date" class="form-input" name="visitDate" id="visitDate" required>
+        </div>
+        <div class="form-section">
+
             <label class="form-label">Enumerator</label>
             <input type="text" class="form-input" name="enumerator" id="enumerator" placeholder="Your name" required>
         </div>
@@ -1155,6 +1160,18 @@
             </div>
         </div>
 
+        <div class="form-section">
+            <div class="profile-group">
+                <div class="profile-item">
+                    <label class="form-label">Check-in Date</label>
+                    <input type="date" class="form-input" id="checkinDate" name="checkinDate" required>
+                </div>
+                <div class="profile-item">
+                    <label class="form-label">Check-out Date</label>
+                    <input type="date" class="form-input" id="checkoutDate" name="checkoutDate" required>
+                </div>
+            </div>
+        </div>
         <div class="form-section">
             <label class="form-label">Enumerator</label>
             <input type="text" class="form-input" id="enumeratorAccom" name="enumerator" placeholder="Your name" required>
