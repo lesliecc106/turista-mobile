@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Dashboard Statistics
-router.get('/dashboard-stats', requireAuth, async (req, res) => {
+router.get('/dashboard-stats', async (req, res) => {
     try {
         const username = req.session.user.username;
         const totalResult = await pool.query('SELECT COUNT(*) as count FROM surveys WHERE owner = $1', [username]);
@@ -21,7 +21,7 @@ router.get('/dashboard-stats', requireAuth, async (req, res) => {
     }
 });
 
-router.get('/chart-data', requireAuth, async (req, res) => {
+router.get('/chart-data', async (req, res) => {
     try {
         const username = req.session.user.username;
         const monthlyResult = await pool.query(`SELECT TO_CHAR(created_at, 'Mon YYYY') as month, COUNT(*) as count FROM surveys WHERE owner = $1 AND created_at >= NOW() - INTERVAL '6 months' GROUP BY TO_CHAR(created_at, 'Mon YYYY'), DATE_TRUNC('month', created_at) ORDER BY DATE_TRUNC('month', created_at)`, [username]);
@@ -97,73 +97,6 @@ router.get('/regional-data', requireAuth, async (req, res) => {
 
 // Get dashboard statistics
 
-router.get('/dashboard/stats', requireAuth, async (req, res) => {
-    try {
-        // Add safety check
-        if (!req.session || !req.session.user || !req.session.user.username) {
-            return res.status(401).json({ error: 'Not authenticated' });
-        }
-
-        const username = req.session.user.username;
-
-        // Total surveys
-        const attractionCount = await pool.query(
-            'SELECT COUNT(*) FROM attraction_surveys WHERE owner = $1',
-            [username]
-        );
-        
-        const accommodationCount = await pool.query(
-            'SELECT COUNT(*) FROM accommodation_surveys WHERE owner = $1',
-            [username]
-        );
-        
-        // Total visitors (from regional distribution)
-        const visitorCount = await pool.query(
-            'SELECT COALESCE(SUM(count), 0) as sum FROM regional_distribution WHERE owner = $1',
-            [username]
-        );
-        
-        // Monthly breakdown
-        const monthlyData = await pool.query(
-            `SELECT
-                TO_CHAR(survey_date, 'YYYY-MM') as month,
-                COUNT(*) as count
-             FROM (
-                SELECT survey_date FROM attraction_surveys WHERE owner = $1
-                UNION ALL
-                SELECT survey_date FROM accommodation_surveys WHERE owner = $1
-             ) surveys
-             GROUP BY month
-             ORDER BY month DESC
-             LIMIT 12`,
-            [username, username]
-        );
-        
-        // Top nationalities
-        const topNationalities = await pool.query(
-            `SELECT origin as country, SUM(count) as total
-             FROM regional_distribution
-             WHERE owner = $1
-             GROUP BY origin
-             ORDER BY total DESC
-             LIMIT 10`,
-            [username]
-        );
-        
-        res.json({
-            totalSurveys: parseInt(attractionCount.rows[0].count) + parseInt(accommodationCount.rows[0].count),
-            attractionSurveys: parseInt(attractionCount.rows[0].count),
-            accommodationSurveys: parseInt(accommodationCount.rows[0].count),
-            totalVisitors: parseInt(visitorCount.rows[0].sum || 0),
-            monthlyData: monthlyData.rows,
-            topNationalities: topNationalities.rows
-        });
-    } catch (error) {
-        console.error('Dashboard stats error:', error);
-        console.error('Error stack:', error.stack);
-        res.status(500).json({ error: 'Failed to fetch dashboard statistics', details: error.message });
-    }
-});
 // Get regional distribution report data (for Excel export)
 router.get('/reports/regional-distribution', requireAuth, async (req, res) => {
     try {
