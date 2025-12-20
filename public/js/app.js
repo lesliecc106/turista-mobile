@@ -407,6 +407,9 @@ function loadPageData(pageId) {
         case 'feedbackPage':
             renderFeedbackPage();
             break;
+        case 'reportsPage':
+            loadReportsPage();
+            break;
     }
 }
 
