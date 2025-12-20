@@ -389,10 +389,11 @@ function updateHeaderTitle(pageId) {
 function loadPageData(pageId) {
     switch(pageId) {
         case 'homePage':
+            loadDashboardAnalytics();
             loadStats();
             break;
         case 'historyPage':
-            renderHistoryPage();
+            loadHistoryData();
             break;
         case 'feedbackPage':
             renderFeedbackPage();
@@ -448,12 +449,13 @@ function buildMenu() {
 // ==================== STATS ====================
 async function loadStats() {
     try {
-        const response = await fetch(`${API_BASE}/api/surveys/stats`);
+        const response = await fetch(`${API_BASE}/api/analytics/dashboard/stats`);
         const data = await response.json();
         
-        document.getElementById('statEstablishments').textContent = data.establishments || 0;
-        document.getElementById('statSurveys').textContent = data.surveys || 0;
-        document.getElementById('statVisitors').textContent = data.regional || 0;
+        document.getElementById("statAttractions").textContent = data.attractionSurveys || 0;
+        document.getElementById("statAccommodations").textContent = data.accommodationSurveys || 0;
+        document.getElementById('statSurveys').textContent = data.totalSurveys || 0;
+        document.getElementById('statVisitors').textContent = data.totalVisitors || 0;
     } catch (error) {
         console.error('Load stats error:', error);
     }
@@ -726,7 +728,7 @@ function renderHistoryPage() {
 
 async function loadHistory(type) {
     try {
-        const response = await fetch(`${API_BASE}/api/surveys/history/${type}`, {
+        const response = await fetch(`${API_BASE}/api/analytics/history`, {
             credentials: 'include'
         });
         
