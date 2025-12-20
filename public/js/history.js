@@ -23,13 +23,27 @@ async function loadHistoryData() {
     }
 }
 
-function displayHistoryData(surveys) {
+async function displayHistoryData(surveys) {
     const container = document.getElementById('historyContent');
     
     if (!surveys || surveys.length === 0) {
         container.innerHTML = '<p class="no-data">No surveys submitted yet</p>';
         return;
     }
+    
+    // Fetch nationality details for each survey
+    const surveysWithNationalities = await Promise.all(surveys.map(async (survey) => {
+        try {
+            const type = survey.type.toLowerCase();
+            const endpoint = type === 'attraction' ? 'attraction' : 'accommodation';
+            const response = await fetch(`/api/surveys/${endpoint}/${survey.id}/nationalities`);
+            const natData = await response.json();
+            survey.nationalities = natData.nationalities || [];
+        } catch (error) {
+            survey.nationalities = [];
+        }
+        return survey;
+    }));
     
     const table = `
         <div class="history-table-container">
@@ -41,16 +55,18 @@ function displayHistoryData(surveys) {
                         <th>Type</th>
                         <th>Name</th>
                         <th>Enumerator</th>
+                        <th>Nationalities</th>
                         <th>Submitted</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${surveys.map(survey => `
+                    ${surveysWithNationalities.map(survey => `
                         <tr>
                             <td>${formatDate(survey.survey_date)}</td>
                             <td><span class="badge badge-${survey.type.toLowerCase()}">${survey.type}</span></td>
                             <td>${survey.name}</td>
                             <td>${survey.enumerator}</td>
+                            <td>${formatNationalities(survey.nationalities)}</td>
                             <td>${formatDateTime(survey.created_at)}</td>
                         </tr>
                     `).join('')}
@@ -60,6 +76,14 @@ function displayHistoryData(surveys) {
     `;
     
     container.innerHTML = table;
+}
+
+function formatNationalities(nationalities) {
+    if (!nationalities || nationalities.length === 0) {
+        return '<span class="no-data">None</span>';
+    }
+    
+    return nationalities.map(nat => `${nat.country}: ${nat.count}`).join(', ');
 }
 
 function formatDate(dateString) {

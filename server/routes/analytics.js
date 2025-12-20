@@ -147,3 +147,40 @@ router.get('/reports/regional-distribution', requireAuth, async (req, res) => {
 });
 
 module.exports = router;
+
+// Get nationalities for a specific attraction survey
+router.get('/surveys/attraction/:id/nationalities', requireAuth, async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT origin as country, count 
+             FROM regional_distribution
+             WHERE survey_id = $1 AND survey_type = 'attraction' AND owner = $2
+             ORDER BY count DESC`,
+            [req.params.id, req.session.user.username]
+        );
+
+        res.json({ nationalities: result.rows });
+    } catch (error) {
+        console.error('Get nationalities error:', error);
+        res.status(500).json({ error: 'Failed to fetch nationalities' });
+    }
+});
+
+// Get nationalities for a specific accommodation survey
+router.get('/surveys/accommodation/:id/nationalities', requireAuth, async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT origin as country, count 
+             FROM regional_distribution
+             WHERE survey_id = $1 AND survey_type = 'accommodation' AND owner = $2
+             ORDER BY count DESC`,
+            [req.params.id, req.session.user.username]
+        );
+
+        res.json({ nationalities: result.rows });
+    } catch (error) {
+        console.error('Get nationalities error:', error);
+        res.status(500).json({ error: 'Failed to fetch nationalities' });
+    }
+});
+

@@ -130,45 +130,6 @@
         </div>
 
         <div class="page hidden" id="homePage">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <div class="stat-info">
-                        <p class="stat-label">Attraction Surveys</p>
-                        <h3 class="stat-value" id="statAttractions">0</h3>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon green">
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
-                    <div class="stat-info">
-                        <p class="stat-label">Surveys</p>
-                        <h3 class="stat-value" id="statSurveys">0</h3>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">
-                        <i class="fas fa-globe-americas"></i>
-                    </div>
-                    <div class="stat-info">
-                        <p class="stat-label">Visitors</p>
-                        <h3 class="stat-value" id="statVisitors">0</h3>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon purple">
-                    <i class="fas fa-hotel"></i>
-                </div>
-                <div class="stat-info">
-                    <p class="stat-label">Accommodation Surveys</p>
-                    <h3 class="stat-value" id="statAccommodations">0</h3>
-                    </div>
-                </div>
-            </div>
-
             <div class="card">
                 <h3 class="card-title">Quick Actions</h3>
                 <div class="action-grid">
@@ -391,6 +352,52 @@
         <div id="reportsContent"></div>
     </div>
         <div class="page hidden" id="dataPage"></div>
+        <div class="page hidden" id="dashboardPage">
+            <div id="dashboardContent">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-info">
+                            <p class="stat-label">Total Surveys</p>
+                            <h3 class="stat-value" id="statSurveys">0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <p class="stat-label">Attraction Surveys</p>
+                            <h3 class="stat-value" id="statAttractions">0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <div class="stat-info">
+                            <p class="stat-label">Accommodation Surveys</p>
+                            <h3 class="stat-value" id="statAccommodations">0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <p class="stat-label">Total Visitors</p>
+                            <h3 class="stat-value" id="statVisitors">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="analytics-section">
+                    <div id="monthlyTrendsChart"></div>
+                    <div id="topNationalitiesChart"></div>
+                </div>
+            </div>
+        </div>
         <div class="page hidden" id="attractionSurveyPage">
     <div class="survey-header">
         <div class="survey-logos">
